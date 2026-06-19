@@ -1,0 +1,125 @@
+:root{
+  --bg:#14110f; --panel:#1d1916; --panel2:#272019; --ink:#ece3d4; --muted:#a99c87;
+  --gold:#c9a24a; --gold2:#e7c976; --line:#3a3026; --accent:#7c4a3a;
+  --abj:#4a78c9; --adv:#9b59b6; --enc:#d77fb3; --evo:#d9534f; --ilu:#7e57c2;
+  --inv:#e08b2e; --nec:#5e8c54; --tra:#3aa0a0;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:"Segoe UI",system-ui,Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.5}
+button{font-family:inherit;cursor:pointer}
+
+/* Topbar */
+.topbar{display:flex;align-items:center;gap:18px;padding:10px 18px;background:linear-gradient(180deg,#221c17,#1a1511);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px}
+.logo{color:var(--gold2);font-size:24px}
+.logo.big{font-size:54px;opacity:.4}
+.brand h1{margin:0;font-size:20px;letter-spacing:.5px;color:var(--gold2);font-weight:700}
+.brand .sub{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+.classes{display:flex;gap:6px;flex-wrap:wrap;flex:1}
+.classes button{background:var(--panel2);color:var(--muted);border:1px solid var(--line);padding:6px 12px;border-radius:20px;font-size:13px;transition:.15s}
+.classes button:hover{color:var(--ink);border-color:var(--gold)}
+.classes button.active{background:var(--gold);color:#1a1410;border-color:var(--gold2);font-weight:600}
+.topactions #search{background:var(--panel2);border:1px solid var(--line);color:var(--ink);padding:8px 12px;border-radius:8px;width:200px;font-size:14px}
+.topactions #search:focus{outline:none;border-color:var(--gold)}
+
+/* Toolbar */
+.toolbar{display:flex;align-items:center;gap:14px;padding:8px 18px;background:var(--panel);border-bottom:1px solid var(--line);flex-wrap:wrap}
+.levels{display:flex;gap:4px;flex-wrap:wrap}
+.levels button{background:transparent;color:var(--muted);border:1px solid var(--line);width:34px;height:30px;border-radius:6px;font-size:13px;font-weight:600}
+.levels button.tk{width:auto;padding:0 8px}
+.levels button:hover{color:var(--ink)}
+.levels button.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.filters{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.filters select{background:var(--panel2);color:var(--ink);border:1px solid var(--line);padding:6px 8px;border-radius:6px}
+.chk{display:flex;align-items:center;gap:5px;font-size:13px;color:var(--muted);cursor:pointer}
+.grimactions{display:flex;align-items:center;gap:8px;margin-left:auto;flex-wrap:wrap}
+.count{font-size:13px;color:var(--gold2);font-weight:600}
+.grimactions button{background:var(--panel2);color:var(--ink);border:1px solid var(--line);padding:7px 11px;border-radius:7px;font-size:13px}
+.grimactions button:hover{border-color:var(--gold)}
+.grimactions button.danger:hover{border-color:var(--evo);color:#f0a0a0}
+
+/* Layout */
+.layout{display:grid;grid-template-columns:minmax(340px,1fr) minmax(380px,1.1fr);gap:0;height:calc(100vh - 112px)}
+.list-pane{overflow-y:auto;border-right:1px solid var(--line);padding:8px 0}
+.detail-pane{overflow-y:auto;padding:24px 30px}
+
+/* List */
+.circle-group{margin-bottom:6px}
+.circle-head{position:sticky;top:0;background:var(--panel);color:var(--gold2);font-size:12px;letter-spacing:1.5px;text-transform:uppercase;padding:7px 18px;border-bottom:1px solid var(--line);z-index:5;display:flex;justify-content:space-between}
+.circle-head .n{color:var(--muted)}
+.spell-row{display:flex;align-items:center;gap:10px;padding:9px 18px;border-bottom:1px solid #221d18;cursor:pointer;transition:.1s}
+.spell-row:hover{background:var(--panel2)}
+.spell-row.sel{background:var(--panel2);box-shadow:inset 3px 0 0 var(--gold)}
+.star{font-size:18px;color:#4a4036;line-height:1;user-select:none;width:20px;text-align:center}
+.star.on{color:var(--gold2)}
+.row-main{flex:1;min-width:0;display:flex;flex-direction:column}
+.spell-row .nm{font-size:14px;line-height:1.25}
+.row-meta{display:none;font-size:11.5px;color:var(--muted);margin-top:3px;line-height:1.3}
+.spell-row .tags{display:flex;gap:5px;align-items:center;flex:0 0 auto}
+.sch-dot{width:9px;height:9px;border-radius:50%;display:inline-block}
+.mini{font-size:10px;color:var(--muted);border:1px solid var(--line);border-radius:4px;padding:1px 4px}
+.empty-list{padding:40px 20px;text-align:center;color:var(--muted)}
+
+/* Modo grimório (filtro "Só do grimório" ativo) — referência rápida in-game */
+body.grim-mode .row-meta{display:block}
+body.grim-mode .spell-row{padding-top:12px;padding-bottom:12px}
+body.grim-mode .circle-head{color:var(--gold2);border-bottom-color:var(--gold)}
+.chk-known{padding:4px 9px;border-radius:7px;transition:.15s}
+body.grim-mode .chk-known{background:var(--gold);color:#1a1410;font-weight:700}
+
+/* Detail */
+.empty{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;color:var(--muted);text-align:center}
+.detail h2{margin:0 0 2px;color:var(--gold2);font-size:26px}
+.detail .lvl-school{color:var(--muted);font-style:italic;margin-bottom:16px;font-size:14px}
+.detail .badges{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.badge{font-size:11px;text-transform:uppercase;letter-spacing:.5px;padding:3px 9px;border-radius:20px;border:1px solid var(--line);color:var(--ink)}
+.badge.rit{border-color:var(--adv);color:#cda7e0}
+.badge.con{border-color:var(--inv);color:#e9b06a}
+.props{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 18px;margin-bottom:18px;font-size:14px}
+.props dt{color:var(--gold2);font-weight:600}
+.props dd{margin:0;color:var(--ink)}
+.desc{font-size:15px;line-height:1.65;white-space:pre-wrap}
+.desc strong{color:var(--gold2)}
+.detail .classlist{margin-top:18px;font-size:13px;color:var(--muted)}
+.detailbtn{margin-top:20px;background:var(--accent);color:#fff;border:none;padding:10px 18px;border-radius:8px;font-size:14px}
+.detailbtn.on{background:var(--gold);color:#1a1410}
+.detail-back{display:none;font-family:inherit}
+
+/* ---- Mobile / uso in-game ---- */
+@media(max-width:820px){
+  /* Topbar compacta; classes em rolagem horizontal; busca em linha cheia */
+  .topbar{gap:8px 12px;padding:8px 12px}
+  .classes{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .classes::-webkit-scrollbar{display:none}
+  .classes button{flex:0 0 auto}
+  .topactions{flex-basis:100%;order:3}
+  .topactions #search{width:100%}
+
+  /* Toolbar: níveis roláveis, alvos de toque maiores */
+  .toolbar{gap:10px;padding:8px 12px}
+  .levels{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .levels::-webkit-scrollbar{display:none}
+  .levels button{flex:0 0 auto;height:38px;min-width:40px}
+  .levels button.tk{padding:0 12px}
+  .grimactions{width:100%}
+  .grimactions button{padding:10px 12px}
+
+  /* Lista ocupa a tela inteira; toques maiores */
+  .layout{display:block;height:auto}
+  .list-pane{height:auto;overflow:visible;border-right:none;padding-bottom:24px}
+  .circle-head{position:static}
+  .spell-row{padding:13px 14px;gap:12px}
+  .star{font-size:24px;width:34px;padding:2px 0}
+  .mini{font-size:11px;padding:2px 5px}
+
+  /* Detalhe vira painel deslizante em tela cheia, com botão Voltar */
+  .detail-pane{position:fixed;inset:0;transform:translateX(100%);transition:transform .22s ease;
+    z-index:60;background:var(--bg);padding:0;border-top:none;overflow-y:auto}
+  body.detail-open .detail-pane{transform:translateX(0)}
+  .detail{padding:18px 18px 48px}
+  .detail h2{font-size:23px}
+  .detail-back{display:block;position:sticky;top:0;z-index:2;width:100%;text-align:left;cursor:pointer;
+    background:var(--panel);color:var(--gold2);border:none;border-bottom:1px solid var(--line);
+    padding:13px 16px;font-size:15px;font-weight:600}
+}

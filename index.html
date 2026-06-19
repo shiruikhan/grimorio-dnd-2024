@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grimório D&D 2024</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <span class="logo">✶</span>
+    <div>
+      <h1>Grimório</h1>
+      <span class="sub">Livro do Jogador · D&amp;D 2024</span>
+    </div>
+  </div>
+  <nav class="classes" id="classes"></nav>
+  <div class="topactions">
+    <input type="search" id="search" placeholder="Buscar magia…" autocomplete="off">
+  </div>
+</header>
+
+<div class="toolbar" id="toolbar">
+  <div class="levels" id="levelFilter"></div>
+  <div class="filters">
+    <select id="schoolFilter"><option value="">Todas as escolas</option></select>
+    <label class="chk"><input type="checkbox" id="fRitual"> Ritual</label>
+    <label class="chk"><input type="checkbox" id="fConc"> Concentração</label>
+    <label class="chk chk-known"><input type="checkbox" id="fKnown"> Só do grimório</label>
+  </div>
+  <div class="grimactions">
+    <span class="count" id="knownCount">0 no grimório</span>
+    <button id="btnPrint" title="Exportar PDF só das magias do grimório (escolha 'Salvar como PDF' no diálogo)">📄 Exportar PDF</button>
+    <button id="btnExport" title="Backup do grimório (.json)">⭳ Backup</button>
+    <button id="btnImport" title="Restaurar grimório de um backup (.json)">⭱ Restaurar</button>
+    <button id="btnClear" class="danger" title="Limpar grimório da classe atual">Limpar</button>
+    <input type="file" id="importFile" accept="application/json" hidden>
+  </div>
+</div>
+
+<main class="layout">
+  <section class="list-pane" id="listPane"></section>
+  <section class="detail-pane" id="detailPane">
+    <div class="empty" id="emptyDetail">
+      <span class="logo big">✶</span>
+      <p>Selecione uma classe e clique em uma magia para ver os detalhes.</p>
+    </div>
+  </section>
+</main>
+
+<script src="data/magias.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

@@ -82,7 +82,11 @@ function render(){
       const row=el("div","spell-row"+(state.selected===m.nome?" sel":""));
       const on=known(state.classe).has(m.nome);
       const star=el("span","star"+(on?" on":""),on?"★":"☆"); star.title="Adicionar/remover do grimório";
-      star.onclick=(e)=>{ e.stopPropagation(); toggleKnown(m.nome); };
+      star.setAttribute("role","button"); star.setAttribute("aria-pressed",on);
+      star.setAttribute("aria-label",(on?"Remover do grimório: ":"Adicionar ao grimório: ")+m.nome); star.tabIndex=0;
+      const toggleStar=(e)=>{ e.stopPropagation(); toggleKnown(m.nome); };
+      star.onclick=toggleStar;
+      star.onkeydown=(e)=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); toggleStar(e); } };
       const main=el("div","row-main");
       main.appendChild(el("span","nm",esc(m.nome)));
       main.appendChild(el("span","row-meta",esc(m.tempo+" · "+m.alcance+(m.concentracao?" · Concentração":""))));

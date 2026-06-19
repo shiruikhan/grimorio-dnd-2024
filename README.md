@@ -43,4 +43,4 @@ As magias aqui reunidas referem-se ao **Livro do Jogador de _Dungeons & Dragons_
 
 *Dungeons & Dragons*, *D&D* e os nomes relacionados são marcas da Wizards of the Coast. Se você detém os direitos e deseja a remoção de algo, basta abrir uma *issue* neste repositório.
 
-O **código** deste site (HTML/CSS/JS) é de uso livre — fique à vontade para copiar, adaptar e reutilizar.
+O **código** deste site (HTML/CSS/JS) é open-source sob a licença **MIT** (veja o arquivo [`LICENSE`](LICENSE)) — fique à vontade para copiar, adaptar e reutilizar. _A licença MIT cobre apenas o código, **não** o conteúdo das magias._

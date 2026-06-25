@@ -8,7 +8,7 @@ function schoolHex(s){ return SCHOOL_HEX[s]||"#7a1f2b"; }
 
 const state = {
   classe: localStorage.getItem("grim_classe") || "Mago",
-  levels: new Set(), school:"", ritual:false, conc:false, known:false,
+  levels: new Set(), school:"", ritual:false, conc:false, known:false, homebrew:false,
   search:"", selected:null, grimorio:{}
 };
 
@@ -61,6 +61,7 @@ function filtered(){
     if(state.ritual && !m.ritual) return false;
     if(state.conc && !m.concentracao) return false;
     if(state.known && !known(state.classe).has(m.nome)) return false;
+    if(state.homebrew && !m.homebrew) return false;
     if(q && !m.nome.toLowerCase().includes(q)) return false;
     return true;
   });
@@ -261,6 +262,7 @@ function init(){
   document.getElementById("fConc").onchange=e=>{ state.conc=e.target.checked; render(); };
   document.getElementById("fKnown").onchange=e=>{ state.known=e.target.checked;
     document.body.classList.toggle("grim-mode",e.target.checked); render(); };
+  document.getElementById("fHomebrew").onchange=e=>{ state.homebrew=e.target.checked; render(); };
   document.getElementById("btnPrint").onclick=exportPDF;
   document.getElementById("btnExport").onclick=exportGrim;
   document.getElementById("btnImport").onclick=()=>document.getElementById("importFile").click();

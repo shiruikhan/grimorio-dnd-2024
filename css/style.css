@@ -84,6 +84,7 @@ body.grim-mode .chk-known{background:var(--gold);color:#1a1410;font-weight:700}
 .badge.con{border-color:var(--inv);color:#e9b06a}
 .badge.hb{border-color:var(--hb);color:#e6cdf2;background:rgba(176,124,201,.14);font-weight:700}
 .mini.hb{color:#1a1410;background:var(--hb);border-color:var(--hb);font-weight:700;letter-spacing:.3px}
+.chk-hb input{accent-color:var(--hb)}
 .props{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 18px;margin-bottom:18px;font-size:14px}
 .props dt{color:var(--gold2);font-weight:600}
 .props dd{margin:0;color:var(--ink)}

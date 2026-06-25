@@ -1,6 +1,6 @@
 :root{
   --bg:#14110f; --panel:#1d1916; --panel2:#272019; --ink:#ece3d4; --muted:#a99c87;
-  --gold:#c9a24a; --gold2:#e7c976; --line:#3a3026; --accent:#7c4a3a;
+  --gold:#c9a24a; --gold2:#e7c976; --line:#3a3026; --accent:#7c4a3a; --hb:#b07cc9;
   --abj:#4a78c9; --adv:#9b59b6; --enc:#d77fb3; --evo:#d9534f; --ilu:#7e57c2;
   --inv:#e08b2e; --nec:#5e8c54; --tra:#3aa0a0;
 }
@@ -82,6 +82,8 @@ body.grim-mode .chk-known{background:var(--gold);color:#1a1410;font-weight:700}
 .badge{font-size:11px;text-transform:uppercase;letter-spacing:.5px;padding:3px 9px;border-radius:20px;border:1px solid var(--line);color:var(--ink)}
 .badge.rit{border-color:var(--adv);color:#cda7e0}
 .badge.con{border-color:var(--inv);color:#e9b06a}
+.badge.hb{border-color:var(--hb);color:#e6cdf2;background:rgba(176,124,201,.14);font-weight:700}
+.mini.hb{color:#1a1410;background:var(--hb);border-color:var(--hb);font-weight:700;letter-spacing:.3px}
 .props{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 18px;margin-bottom:18px;font-size:14px}
 .props dt{color:var(--gold2);font-weight:600}
 .props dd{margin:0;color:var(--ink)}

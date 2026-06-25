@@ -94,6 +94,7 @@ function render(){
       const dot=el("span","sch-dot"); dot.style.background=schoolColor(m.escola); dot.title=m.escola; tags.appendChild(dot);
       if(m.ritual) tags.appendChild(el("span","mini","R"));
       if(m.concentracao) tags.appendChild(el("span","mini","C"));
+      if(m.homebrew){ const hb=el("span","mini hb","HB"); hb.title="Homebrew — fora do Livro do Jogador 2024"; tags.appendChild(hb); }
       row.append(star,main,tags);
       row.onclick=()=>{ state.selected=m.nome; showDetail(m);
         document.querySelectorAll(".spell-row").forEach(r=>r.classList.remove("sel")); row.classList.add("sel"); };
@@ -119,6 +120,7 @@ function showDetail(m){
   const on=known(state.classe).has(m.nome);
   const lvlTxt = m.nivel===0 ? "Truque de "+m.escola : m.nivel+"º Círculo · "+m.escola;
   let badges="";
+  if(m.homebrew) badges+='<span class="badge hb" title="Fora do Livro do Jogador 2024">✦ Homebrew</span>';
   if(m.ritual) badges+='<span class="badge rit">Ritual</span>';
   if(m.concentracao) badges+='<span class="badge con">Concentração</span>';
   badges+='<span class="badge" style="border-color:'+schoolColor(m.escola)+'">'+esc(m.escola)+'</span>';
@@ -189,7 +191,7 @@ function cardHTML(m,cls){
   const c=schoolHex(m.escola);
   const lvBadge=m.nivel===0?"T":m.nivel;
   const foot=(m.nivel===0?"Truque":m.nivel+"º Círculo")+" · "+m.escola+
-    (m.ritual?" · Ritual":"")+(m.concentracao?" · Concentração":"");
+    (m.ritual?" · Ritual":"")+(m.concentracao?" · Concentração":"")+(m.homebrew?" · Homebrew":"");
   return '<div class="card" style="--c:'+c+'">'+
     '<div class="ttl"><span class="nm">'+esc(m.nome)+'</span><span class="lv">'+lvBadge+'</span></div>'+
     '<div class="grid2">'+

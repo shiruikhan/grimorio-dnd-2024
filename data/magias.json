@@ -8105,5 +8105,309 @@
   "ritual": false,
   "concentracao": false,
   "descricao": "Você provoca um tremor no solo em um raio de 3 metros a partir de você. Cada criatura diferente de você na área deve ser bem-sucedida em uma salvaguarda de Destreza ou sofre 1d6 pontos de dano Contundente e tem a condição Caído. Se o solo na área for de terra ou pedra solta, ele se torna Terreno Difícil até ser limpo. \n\nUsando um Espaço de Magia de Círculo Superior. O dano aumenta em 1d6 para cada círculo de espaço de magia acima de 1."
+ },
+ {
+  "nome": "Absorver Elementos",
+  "nivel": 1,
+  "escola": "Abjuração",
+  "classes": [
+   "Feiticeiro",
+   "Mago"
+  ],
+  "tempo": "Reação, que você executa quando sofre dano Ácido, Gélido, Ígneo, Elétrico ou Trovejante",
+  "alcance": "Pessoal",
+  "componentes": "S",
+  "comp_v": false,
+  "comp_s": true,
+  "comp_m": false,
+  "material": "",
+  "duracao": "1 rodada",
+  "ritual": false,
+  "concentracao": false,
+  "descricao": "A magia captura parte da energia recebida e a armazena para potencializar seu próximo ataque. Você tem Resistência ao tipo de dano que desencadeou a magia até o início do seu próximo turno. Além disso, na primeira vez que você acertar um ataque corpo a corpo no seu próximo turno, o alvo sofre 1d6 pontos de dano adicional do tipo desencadeado, e então a magia termina. \n\nUsando um Espaço de Magia de Círculo Superior. O dano adicional aumenta em 1d6 para cada círculo de espaço de magia acima de 1."
+ },
+ {
+  "nome": "Cerimônia",
+  "nivel": 1,
+  "escola": "Abjuração",
+  "classes": [
+   "Clérigo",
+   "Paladino"
+  ],
+  "tempo": "1 hora",
+  "alcance": "Toque",
+  "componentes": "V, S, M (pó de prata no valor de 25 PO, consumido pela magia)",
+  "comp_v": true,
+  "comp_s": true,
+  "comp_m": true,
+  "material": "pó de prata no valor de 25 PO, consumido pela magia",
+  "duracao": "Instantânea",
+  "ritual": true,
+  "concentracao": false,
+  "descricao": "Você realiza uma de várias cerimônias religiosas. Ao conjurar a magia, escolha uma das opções a seguir; o alvo dela deve permanecer a até 3 metros de você durante toda a conjuração.\n\nExpiação. Você toca uma criatura disposta cujo alinhamento mudou e faz um teste de Sabedoria (Intuição) CD 20. Em caso de sucesso, restaura o alvo ao seu alinhamento original.\n\nÁgua Benta. Você toca um frasco de água e o transforma em água benta.\n\nMaioridade. Você toca um Humanoide jovem adulto. Pelas próximas 24 horas, sempre que o alvo fizer um teste de atributo, ele rola 1d4 adicional e soma ao resultado. Uma criatura só pode se beneficiar deste rito uma vez.\n\nDedicação. Você toca um Humanoide que deseja se dedicar ao serviço do seu deus. Pelas próximas 24 horas, sempre que o alvo fizer uma salvaguarda, ele rola 1d4 adicional e soma ao resultado. Uma criatura só pode se beneficiar deste rito uma vez.\n\nRito Fúnebre. Você toca um cadáver; pelos próximos 7 dias, o alvo não pode se tornar morto-vivo por nenhum meio aquém da magia Desejo.\n\nCasamento. Você toca Humanoides dispostos a se unirem em matrimônio. Pelos próximos 7 dias, cada alvo recebe +2 de bônus na CA enquanto estiverem a até 9 metros um do outro. Uma criatura só pode se beneficiar novamente deste rito se ficar viúva."
+ },
+ {
+  "nome": "Dádiva de Presteza",
+  "nivel": 1,
+  "escola": "Adivinhação",
+  "classes": [
+   "Mago"
+  ],
+  "tempo": "1 minuto",
+  "alcance": "Toque",
+  "componentes": "V, S",
+  "comp_v": true,
+  "comp_s": true,
+  "comp_m": false,
+  "material": "",
+  "duracao": "8 horas",
+  "ritual": false,
+  "concentracao": false,
+  "descricao": "Você toca uma criatura disposta. Pela duração da magia, o alvo pode somar 1d8 às suas rolagens de iniciativa."
+ },
+ {
+  "nome": "Chuva de Bolas de Neve de Snilloc",
+  "nivel": 2,
+  "escola": "Evocação",
+  "classes": [
+   "Feiticeiro",
+   "Mago"
+  ],
+  "tempo": "Ação",
+  "alcance": "27 metros",
+  "componentes": "V, S, M (um pedaço de gelo ou uma lasca de pedra branca)",
+  "comp_v": true,
+  "comp_s": true,
+  "comp_m": true,
+  "material": "um pedaço de gelo ou uma lasca de pedra branca",
+  "duracao": "Instantânea",
+  "ritual": false,
+  "concentracao": false,
+  "descricao": "Uma rajada de bolas de neve mágicas surge de um ponto à sua escolha no alcance da magia. Cada criatura em uma Esfera de 1,5 metro de raio centrada nesse ponto realiza uma salvaguarda de Destreza, sofrendo 3d6 pontos de dano Gélido se falhar, ou metade desse dano em caso de sucesso. \n\nUsando um Espaço de Magia de Círculo Superior. O dano aumenta em 1d6 para cada círculo de espaço de magia acima de 2."
+ },
+ {
+  "nome": "Diabo da Poeira",
+  "nivel": 2,
+  "escola": "Invocação",
+  "classes": [
+   "Feiticeiro",
+   "Mago"
+  ],
+  "tempo": "Ação",
+  "alcance": "18 metros",
+  "componentes": "V, S, M (um punhado de poeira)",
+  "comp_v": true,
+  "comp_s": true,
+  "comp_m": true,
+  "material": "um punhado de poeira",
+  "duracao": "Concentração, até 1 minuto",
+  "ritual": false,
+  "concentracao": true,
+  "descricao": "Escolha um Cubo de ar desocupado de 1,5 metro de lado que você possa ver no alcance da magia. Uma força elemental semelhante a um diabo da poeira surge no cubo e permanece pela duração da magia.\n\nQualquer criatura que terminar o turno a até 1,5 metro do diabo da poeira realiza uma salvaguarda de Força. Se falhar, sofre 1d8 pontos de dano Contundente e é empurrada 3 metros para longe. Em caso de sucesso, sofre metade do dano e não é empurrada.\n\nComo uma Ação Bônus, você pode mover o diabo da poeira até 9 metros em qualquer direção. Se ele se mover sobre areia, poeira, terra solta ou cascalho, suga o material e forma ao seu redor uma nuvem de detritos de 3 metros de raio, que dura até o início do seu próximo turno; essa área fica Totalmente Obscurecida. \n\nUsando um Espaço de Magia de Círculo Superior. O dano aumenta em 1d8 para cada círculo de espaço de magia acima de 2."
+ },
+ {
+  "nome": "Abraço Terrestre de Maximilian",
+  "nivel": 2,
+  "escola": "Transmutação",
+  "classes": [
+   "Feiticeiro",
+   "Mago"
+  ],
+  "tempo": "Ação",
+  "alcance": "9 metros",
+  "componentes": "V, S, M (uma mão em miniatura esculpida em barro)",
+  "comp_v": true,
+  "comp_s": true,
+  "comp_m": true,
+  "material": "uma mão em miniatura esculpida em barro",
+  "duracao": "Concentração, até 1 minuto",
+  "ritual": false,
+  "concentracao": true,
+  "descricao": "Escolha um espaço desocupado de 1,5 metro de lado no solo que você possa ver no alcance da magia. Uma mão Média feita de terra compacta se ergue ali e tenta agarrar uma criatura que você possa ver a até 1,5 metro dela. O alvo realiza uma salvaguarda de Força; se falhar, sofre 2d6 pontos de dano Contundente e tem a condição Contido pela duração da magia.\n\nComo uma ação, você pode fazer a mão esmagar o alvo Contido, que realiza uma salvaguarda de Força, sofrendo 2d6 pontos de dano Contundente se falhar, ou metade em caso de sucesso. Para se soltar, o alvo Contido pode usar uma ação para fazer um teste de Força contra a CD de salvaguarda da magia; em caso de sucesso, escapa e deixa de estar Contido.\n\nComo uma Ação Bônus, você pode fazer a mão alcançar outra criatura ou se mover para outro espaço desocupado no alcance, soltando um alvo Contido ao fazê-lo."
+ },
+ {
+  "nome": "Distorção Vórtice",
+  "nivel": 2,
+  "escola": "Invocação",
+  "classes": [
+   "Feiticeiro",
+   "Mago"
+  ],
+  "tempo": "Ação",
+  "alcance": "27 metros",
+  "componentes": "V, S",
+  "comp_v": true,
+  "comp_s": true,
+  "comp_m": false,
+  "material": "",
+  "duracao": "Instantânea",
+  "ritual": false,
+  "concentracao": false,
+  "descricao": "Você teletransporta magicamente uma criatura que possa ver no alcance da magia. O alvo deve ser bem-sucedido em uma salvaguarda de Constituição (ele pode optar por falhar voluntariamente) ou é teletransportado para um espaço desocupado que você possa ver, também no alcance. O espaço escolhido deve estar sobre uma superfície ou em um líquido capaz de sustentar o alvo sem que ele precise se espremer, e não pode ser prejudicial a ele. \n\nUsando um Espaço de Magia de Círculo Superior. O alcance aumenta em 9 metros para cada círculo de espaço de magia acima de 2."
+ },
+ {
+  "nome": "Conhecimento Emprestado",
+  "nivel": 2,
+  "escola": "Adivinhação",
+  "classes": [
+   "Bardo",
+   "Clérigo",
+   "Mago"
+  ],
+  "tempo": "Ação",
+  "alcance": "Pessoal",
+  "componentes": "V, S, M (um livro no valor de pelo menos 25 PO)",
+  "comp_v": true,
+  "comp_s": true,
+  "comp_m": true,
+  "material": "um livro no valor de pelo menos 25 PO",
+  "duracao": "1 hora",
+  "ritual": false,
+  "concentracao": false,
+  "descricao": "Você recorre ao conhecimento de espíritos do passado. Escolha uma perícia na qual você não tenha proficiência. Por 1 hora, você tem proficiência na perícia escolhida. A magia termina antes se você a conjurar novamente."
+ },
+ {
+  "nome": "Deslocamento Cinético",
+  "nivel": 2,
+  "escola": "Transmutação",
+  "classes": [
+   "Bardo",
+   "Feiticeiro",
+   "Mago"
+  ],
+  "tempo": "Ação Bônus",
+  "alcance": "Pessoal",
+  "componentes": "V, S",
+  "comp_v": true,
+  "comp_s": true,
+  "comp_m": false,
+  "material": "",
+  "duracao": "Concentração, até 1 minuto",
+  "ritual": false,
+  "concentracao": true,
+  "descricao": "Você potencializa magicamente seu movimento com energia cinética. Pela duração da magia: seu Deslocamento aumenta em 3 metros; você não provoca ataques de oportunidade; e você pode se mover através do espaço de outras criaturas, embora não possa terminar o movimento no espaço delas."
+ },
+ {
+  "nome": "Meteoros Momentâneos de Melf",
+  "nivel": 3,
+  "escola": "Evocação",
+  "classes": [
+   "Feiticeiro",
+   "Mago"
+  ],
+  "tempo": "Ação",
+  "alcance": "Pessoal",
+  "componentes": "V, S, M (salitre, enxofre e alcatrão de pinheiro formando um cordão)",
+  "comp_v": true,
+  "comp_s": true,
+  "comp_m": true,
+  "material": "salitre, enxofre e alcatrão de pinheiro formando um cordão",
+  "duracao": "Concentração, até 10 minutos",
+  "ritual": false,
+  "concentracao": true,
+  "descricao": "Você cria seis pequenos meteoros em seu espaço, que flutuam no ar e orbitam você pela duração da magia. Ao conjurar a magia — e como uma Ação Bônus em cada um dos turnos seguintes — você pode gastar um ou dois meteoros, lançando-os a pontos à sua escolha a até 36 metros de você. Quando um meteoro chega ao destino ou atinge uma superfície sólida, ele explode. Cada criatura a até 1,5 metro do ponto de explosão realiza uma salvaguarda de Destreza, sofrendo 2d6 pontos de dano Ígneo se falhar, ou metade em caso de sucesso. \n\nUsando um Espaço de Magia de Círculo Superior. O número de meteoros criados aumenta em dois para cada círculo de espaço de magia acima de 3."
+ },
+ {
+  "nome": "Erupção de Terra",
+  "nivel": 3,
+  "escola": "Transmutação",
+  "classes": [
+   "Feiticeiro",
+   "Mago"
+  ],
+  "tempo": "Ação",
+  "alcance": "36 metros",
+  "componentes": "V, S, M (um pedaço de obsidiana)",
+  "comp_v": true,
+  "comp_s": true,
+  "comp_m": true,
+  "material": "um pedaço de obsidiana",
+  "duracao": "Instantânea",
+  "ritual": false,
+  "concentracao": false,
+  "descricao": "Escolha um ponto que você possa ver no solo, no alcance da magia. Uma fonte de terra e pedras irrompe em um Cubo de 6 metros de lado centrado nesse ponto. Cada criatura na área realiza uma salvaguarda de Destreza, sofrendo 3d12 pontos de dano Contundente se falhar, ou metade em caso de sucesso. Além disso, o solo na área se torna Terreno Difícil até ser limpo — cada porção de 1,5 metro de lado leva pelo menos 1 minuto para ser limpa manualmente. \n\nUsando um Espaço de Magia de Círculo Superior. O dano aumenta em 1d12 para cada círculo de espaço de magia acima de 3."
+ },
+ {
+  "nome": "Transferência de Vida",
+  "nivel": 3,
+  "escola": "Necromancia",
+  "classes": [
+   "Clérigo",
+   "Mago"
+  ],
+  "tempo": "Ação",
+  "alcance": "9 metros",
+  "componentes": "V, S",
+  "comp_v": true,
+  "comp_s": true,
+  "comp_m": false,
+  "material": "",
+  "duracao": "Instantânea",
+  "ritual": false,
+  "concentracao": false,
+  "descricao": "Você sacrifica parte da sua vitalidade para curar os ferimentos de outra criatura. Você sofre 4d8 pontos de dano Necrótico, e uma criatura à sua escolha que você possa ver no alcance da magia recupera um número de Pontos de Vida igual ao dobro do dano Necrótico que você sofreu. \n\nUsando um Espaço de Magia de Círculo Superior. O dano aumenta em 1d8 para cada círculo de espaço de magia acima de 3."
+ },
+ {
+  "nome": "Mortalha Espiritual",
+  "nivel": 3,
+  "escola": "Necromancia",
+  "classes": [
+   "Clérigo",
+   "Paladino",
+   "Mago"
+  ],
+  "tempo": "Ação Bônus",
+  "alcance": "Pessoal",
+  "componentes": "V, S",
+  "comp_v": true,
+  "comp_s": true,
+  "comp_m": false,
+  "material": "",
+  "duracao": "Concentração, até 1 minuto",
+  "ritual": false,
+  "concentracao": true,
+  "descricao": "Você invoca espíritos dos mortos, que esvoaçam ao seu redor pela duração da magia. Os espíritos são intangíveis e invulneráveis.\n\nAté a magia terminar, todo ataque que você faz causa 1d8 pontos de dano adicional ao acertar uma criatura a até 3 metros de você. Esse dano é Radiante, Necrótico ou Gélido (à sua escolha ao conjurar a magia). Qualquer criatura que sofra esse dano não pode recuperar Pontos de Vida até o início do seu próximo turno.\n\nAlém disso, qualquer criatura à sua escolha que você possa ver e que comece o turno a até 3 metros de você tem o Deslocamento reduzido em 3 metros até o início do seu próximo turno. \n\nUsando um Espaço de Magia de Círculo Superior. O dano aumenta em 1d8 para cada dois círculos de espaço de magia acima de 3."
+ },
+ {
+  "nome": "Inimigos por Toda Parte",
+  "nivel": 3,
+  "escola": "Encantamento",
+  "classes": [
+   "Bardo",
+   "Feiticeiro",
+   "Mago"
+  ],
+  "tempo": "Ação",
+  "alcance": "36 metros",
+  "componentes": "V, S",
+  "comp_v": true,
+  "comp_s": true,
+  "comp_m": false,
+  "material": "",
+  "duracao": "Concentração, até 1 minuto",
+  "ritual": false,
+  "concentracao": true,
+  "descricao": "Você alcança a mente de uma criatura que possa ver no alcance da magia e a força a fazer uma salvaguarda de Inteligência. Uma criatura imune à condição Amedrontado é bem-sucedida automaticamente. Se falhar, o alvo perde a capacidade de distinguir aliados de inimigos, passando a tratar todas as criaturas que enxerga como inimigas até a magia terminar. Sempre que escolher outra criatura como alvo, ele deve escolhê-la aleatoriamente entre as criaturas que enxerga no alcance do ataque, magia ou habilidade usada. Se um inimigo provocar um ataque de oportunidade do alvo afetado, este deve fazer o ataque, se puder.\n\nCada vez que o alvo sofrer dano, ele pode repetir a salvaguarda, encerrando o efeito sobre si em caso de sucesso."
+ },
+ {
+  "nome": "Fortaleza do Intelecto",
+  "nivel": 3,
+  "escola": "Abjuração",
+  "classes": [
+   "Bardo",
+   "Feiticeiro",
+   "Mago"
+  ],
+  "tempo": "Ação",
+  "alcance": "9 metros",
+  "componentes": "V, S",
+  "comp_v": true,
+  "comp_s": true,
+  "comp_m": false,
+  "material": "",
+  "duracao": "Concentração, até 1 hora",
+  "ritual": false,
+  "concentracao": true,
+  "descricao": "Pela duração da magia, você ou uma criatura disposta que possa ver no alcance da magia tem Resistência a dano Psíquico e Vantagem em salvaguardas de Inteligência, Sabedoria e Carisma. \n\nUsando um Espaço de Magia de Círculo Superior. Você pode escolher uma criatura adicional como alvo para cada círculo de espaço de magia acima de 3."
  }
 ]

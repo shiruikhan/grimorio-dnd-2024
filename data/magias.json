@@ -8003,5 +8003,107 @@
   "ritual": false,
   "concentracao": true,
   "descricao": "Uma nuvem de tempestade agitada se forma, centrada pela duração em um ponto no alcance da magia, se espalhando para um raio de 90 metros. Cada criatura sob a nuvem quando ela aparecer deve ser bem-sucedida em uma salvaguarda de Constituição ou sofre 2d6 pontos de dano Trovejante e tem a condição Surdo pela duração da magia. No início de cada um dos seus turnos posteriores, a tempestade produz efeitos diferentes, conforme detalhado abaixo: Turno 2: Chuva ácida cai. Cada criatura e objeto sob a nuvem sofre 4d6 pontos de dano Ácido. Turno 3: Você convoca seis relâmpagos da nuvem para atingir seis criaturas ou objetos diferentes abaixo dela. Cada alvo realiza uma salvaguarda de Destreza, sofrendo 10d6 pontos de dano Elétrico se falhar ou metade desse dano em caso de sucesso. Turno 4: Chuva de pedras de granizo. Cada criatura sob a nuvem sofre 2d6 pontos de dano Contundente. Turnos 5-10: Rajadas de vento e chuva gelada surgem sob a nuvem. Cada criatura na área sofre 1d6 pontos de dano Gélido. Até que a magia termine, a área é Terreno Difícil e está Totalmente Obscurecida, ataques à distância com armas são impossíveis nela e ventos fortes sopram por toda a área."
+ },
+ {
+  "nome": "Raio do Caos",
+  "nivel": 1,
+  "escola": "Evocação",
+  "classes": [
+   "Feiticeiro"
+  ],
+  "tempo": "Ação",
+  "alcance": "36 metros",
+  "componentes": "V, S",
+  "comp_v": true,
+  "comp_s": true,
+  "comp_m": false,
+  "material": "",
+  "duracao": "Instantânea",
+  "ritual": false,
+  "concentracao": false,
+  "descricao": "Você arremessa uma massa ondulante e crepitante de energia caótica em uma criatura no alcance da magia. Realize um ataque mágico à distância contra o alvo. Em caso de acerto, o alvo sofre 2d8 + 1d6 pontos de dano. Escolha um dos d8: o número rolado nele determina o tipo do dano — 1, Ácido; 2, Gélido; 3, Ígneo; 4, Energético; 5, Elétrico; 6, Venenoso; 7, Psíquico; 8, Trovejante. \n\nSe você obtiver o mesmo número nos dois d8, a energia caótica salta do alvo para outra criatura à sua escolha a até 9 metros dele. Realize uma nova jogada de ataque contra o novo alvo e uma nova rolagem de dano, o que pode fazer a energia saltar novamente. Uma criatura só pode ser alvo uma vez por conjuração desta magia. \n\nUsando um Espaço de Magia de Círculo Superior. Cada alvo sofre 1d6 pontos de dano adicional do tipo rolado para cada círculo de espaço de magia acima de 1."
+ },
+ {
+  "nome": "Farpas Prateadas",
+  "nivel": 1,
+  "escola": "Encantamento",
+  "classes": [
+   "Bardo",
+   "Feiticeiro",
+   "Mago"
+  ],
+  "tempo": "Reação, que você executa quando uma criatura à sua vista a até 18 metros obtém sucesso em uma jogada de ataque, teste de atributo ou salvaguarda",
+  "alcance": "18 metros",
+  "componentes": "V",
+  "comp_v": true,
+  "comp_s": false,
+  "comp_m": false,
+  "material": "",
+  "duracao": "Instantânea",
+  "ritual": false,
+  "concentracao": false,
+  "descricao": "Você distrai magicamente a criatura que desencadeou a magia e transforma sua incerteza momentânea em encorajamento para outra criatura. A criatura desencadeadora deve rolar novamente o d20 e usar o resultado menor. Em seguida, você escolhe uma criatura diferente à sua vista no alcance da magia (pode ser você mesmo). A criatura escolhida tem Vantagem na próxima jogada de ataque, teste de atributo ou salvaguarda que realizar dentro de 1 minuto. Uma criatura só pode ser beneficiada por um uso desta magia por vez."
+ },
+ {
+  "nome": "Beberagem Cáustica de Tasha",
+  "nivel": 1,
+  "escola": "Evocação",
+  "classes": [
+   "Feiticeiro",
+   "Mago"
+  ],
+  "tempo": "Ação",
+  "alcance": "Pessoal",
+  "componentes": "V, S, M (um pouco de comida estragada)",
+  "comp_v": true,
+  "comp_s": true,
+  "comp_m": true,
+  "material": "um pouco de comida estragada",
+  "duracao": "Concentração, até 1 minuto",
+  "ritual": false,
+  "concentracao": true,
+  "descricao": "Um jato de ácido parte de você em uma Linha de 9 metros de comprimento e 1,5 metro de largura, na direção que você escolher. Cada criatura na Linha deve ser bem-sucedida em uma salvaguarda de Destreza ou fica coberta de ácido pela duração da magia, ou até que uma criatura use sua ação para raspar ou lavar o ácido de si mesma ou de outra criatura. Uma criatura coberta pelo ácido sofre 2d4 pontos de dano Ácido no início de cada um de seus turnos. \n\nUsando um Espaço de Magia de Círculo Superior. O dano aumenta em 2d4 para cada círculo de espaço de magia acima de 1."
+ },
+ {
+  "nome": "Catapulta",
+  "nivel": 1,
+  "escola": "Transmutação",
+  "classes": [
+   "Feiticeiro",
+   "Mago"
+  ],
+  "tempo": "Ação",
+  "alcance": "45 metros",
+  "componentes": "S",
+  "comp_v": false,
+  "comp_s": true,
+  "comp_m": false,
+  "material": "",
+  "duracao": "Instantânea",
+  "ritual": false,
+  "concentracao": false,
+  "descricao": "Escolha um objeto que pese entre 0,5 e 2,5 quilos e que esteja no alcance da magia e não esteja sendo vestido nem carregado. O objeto voa em linha reta por até 18 metros na direção que você escolher antes de cair no chão, parando se atingir uma superfície sólida. Se o objeto puder atingir uma criatura, ela deve ser bem-sucedida em uma salvaguarda de Destreza ou o objeto a atinge e para de se mover. Em qualquer caso, tanto o objeto quanto a criatura ou a superfície sólida atingida sofrem 3d8 pontos de dano Contundente. \n\nUsando um Espaço de Magia de Círculo Superior. O peso máximo do objeto aumenta em 2,5 quilos e o dano aumenta em 1d8 para cada círculo de espaço de magia acima de 1."
+ },
+ {
+  "nome": "Tremor de Terra",
+  "nivel": 1,
+  "escola": "Evocação",
+  "classes": [
+   "Bardo",
+   "Druida",
+   "Feiticeiro",
+   "Mago"
+  ],
+  "tempo": "Ação",
+  "alcance": "Pessoal",
+  "componentes": "V, S",
+  "comp_v": true,
+  "comp_s": true,
+  "comp_m": false,
+  "material": "",
+  "duracao": "Instantânea",
+  "ritual": false,
+  "concentracao": false,
+  "descricao": "Você provoca um tremor no solo em um raio de 3 metros a partir de você. Cada criatura diferente de você na área deve ser bem-sucedida em uma salvaguarda de Destreza ou sofre 1d6 pontos de dano Contundente e tem a condição Caído. Se o solo na área for de terra ou pedra solta, ele se torna Terreno Difícil até ser limpo. \n\nUsando um Espaço de Magia de Círculo Superior. O dano aumenta em 1d6 para cada círculo de espaço de magia acima de 1."
  }
 ]

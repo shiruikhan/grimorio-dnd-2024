@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://shiruikhan.github.io/grimorio-dnd-2024/sitemap.xml

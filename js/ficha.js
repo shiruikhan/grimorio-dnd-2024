@@ -11,15 +11,19 @@ let fichaClasse = null;// classe à qual `ficha` pertence
 let aberta = false;
 
 // ---- persistência (chave própria; não toca nas chaves do grimório) ----
-function defaultFicha(){
-  return { nome:"", nivel:1, atr:{FOR:10,DES:10,CON:10,INT:10,SAB:10,CAR:10}, usos:{} };
+function defaultFicha(cls){
+  // salvaguardas da classe já vêm marcadas (o jogador pode alterar)
+  const sv = {};
+  ((DATA.classes[cls]||{}).salvaguardas||[]).forEach(a=>{ sv[a]=1; });
+  return { nome:"", nivel:1, atr:{FOR:10,DES:10,CON:10,INT:10,SAB:10,CAR:10},
+    usos:{}, talentos:{}, pericias:{}, salvaguardas:sv };
 }
 function loadFicha(cls){
   try{
     const d = JSON.parse(localStorage.getItem("grim_ficha_"+cls) || "null");
-    if(d && d.atr) return Object.assign(defaultFicha(), d, {atr:Object.assign(defaultFicha().atr, d.atr)});
+    if(d && d.atr) return Object.assign(defaultFicha(cls), d, {atr:Object.assign(defaultFicha(cls).atr, d.atr)});
   }catch(e){}
-  return defaultFicha();
+  return defaultFicha(cls);
 }
 function saveFicha(){ if(fichaClasse) localStorage.setItem("grim_ficha_"+fichaClasse, JSON.stringify(ficha)); }
 
@@ -36,15 +40,29 @@ function slotsInfo(cls,nivel){
   }
   return DATA.slots[c.conjurador][nivel-1].map((q,i)=>({circulo:i+1, qtd:q}));
 }
+function talentosBonus(nivel){
+  let truques=0, preparadas=0;
+  (window.TALENTOS_DATA||[]).forEach(f=>{
+    const q = ficha.talentos[f.id]||0;
+    if(!q) return;
+    if(f.efeito.truques) truques += f.efeito.truques*q;
+    if(f.efeito.preparadas) preparadas += f.efeito.preparadas*q;
+    if(f.efeito.preparadasProf) preparadas += profBonus(nivel)*q;
+  });
+  return { truques, preparadas };
+}
 function calc(cls){
   const c = DATA.classes[cls];
   const n = ficha.nivel;
   const m = mod(ficha.atr[c.chave]);
   const p = profBonus(n);
   const slots = slotsInfo(cls,n);
+  const tb = talentosBonus(n);
+  const truquesClasse = c.truques ? c.truques[n-1] : 0;
   return { c, n, m, p, cd:8+p+m, atk:p+m,
-    truques: c.truques ? c.truques[n-1] : 0,
-    preparadas: c.preparadas[n-1],
+    truquesClasse, preparadasClasse: c.preparadas[n-1], talentos: tb,
+    truques: truquesClasse + tb.truques,
+    preparadas: c.preparadas[n-1] + tb.preparadas,
     slots, maxCirculo: slots.length ? slots[slots.length-1].circulo : 0 };
 }
 
@@ -117,8 +135,11 @@ function renderPanel(){
   body.appendChild(atrs);
 
   // seções calculadas (preenchidas por updateComputed)
+  body.appendChild(el("div","ficha-saves"));
+  body.appendChild(el("div","ficha-skills"));
   body.appendChild(el("div","ficha-stats"));
   body.appendChild(el("div","ficha-limits"));
+  body.appendChild(buildTalentos());
   body.appendChild(el("div","ficha-slots"));
   body.appendChild(el("div","ficha-spells"));
   panel.appendChild(body);
@@ -134,6 +155,39 @@ function renderPanel(){
   updateComputed();
 }
 
+// seção de talentos que alteram truques/magias preparadas (data/talentos.js)
+function buildTalentos(){
+  const box = el("div","ficha-talentos");
+  box.appendChild(el("div","slots-title","Talentos de Conjuração"));
+  (window.TALENTOS_DATA||[]).forEach(f=>{
+    const q = ficha.talentos[f.id]||0;
+    const row = el("div","tal-row"+(q?" on":""));
+    const info = el("div","tal-info");
+    info.appendChild(el("span","tal-nm",esc(f.nome)+(f.prereq?' <span class="tal-pre">('+esc(f.prereq)+')</span>':"")));
+    info.appendChild(el("span","tal-desc",esc(f.resumo)));
+    row.appendChild(info);
+    const ctrl = el("div","tal-ctrl");
+    if(f.repetivel){
+      const menos=el("button",null,"−"), qt=el("span","tal-q",String(q)), mais=el("button",null,"+");
+      menos.title="Remover uma aquisição"; mais.title="Adquirir (repetível até "+f.repetivel+"×, uma lista diferente a cada vez)";
+      const set=(v)=>{ v=Math.max(0,Math.min(f.repetivel,v));
+        if(v) ficha.talentos[f.id]=v; else delete ficha.talentos[f.id];
+        qt.textContent=v; row.classList.toggle("on",v>0); saveFicha(); updateComputed(); };
+      menos.onclick=()=>set((ficha.talentos[f.id]||0)-1);
+      mais.onclick=()=>set((ficha.talentos[f.id]||0)+1);
+      ctrl.append(menos,qt,mais);
+    }else{
+      const cb=document.createElement("input"); cb.type="checkbox"; cb.checked=q>0;
+      cb.onchange=()=>{ if(cb.checked) ficha.talentos[f.id]=1; else delete ficha.talentos[f.id];
+        row.classList.toggle("on",cb.checked); saveFicha(); updateComputed(); };
+      ctrl.appendChild(cb);
+    }
+    row.appendChild(ctrl);
+    box.appendChild(row);
+  });
+  return box;
+}
+
 function updateComputed(){
   if(!aberta) return;
   const r = calc(fichaClasse);
@@ -142,6 +196,46 @@ function updateComputed(){
 
   // modificadores ao lado dos atributos
   panel.querySelectorAll(".atr-mod").forEach(s=>{ s.textContent = fmtMod(mod(ficha.atr[s.dataset.atr])); });
+
+  // salvaguardas (clique alterna proficiência)
+  const svBox = panel.querySelector(".ficha-saves");
+  svBox.innerHTML = "";
+  svBox.appendChild(el("div","slots-title","Salvaguardas"));
+  const svWrap = el("div","saves-wrap");
+  ATRS.forEach(a=>{
+    const on = !!ficha.salvaguardas[a];
+    const bonus = mod(ficha.atr[a]) + (on?r.p:0);
+    const chip = el("button","save-chip"+(on?" on":""),(on?"● ":"○ ")+a+" <b>"+fmtMod(bonus)+"</b>");
+    chip.title = ATR_NOMES[a]+" — clique para "+(on?"remover":"marcar")+" a proficiência";
+    chip.onclick = ()=>{ if(on) delete ficha.salvaguardas[a]; else ficha.salvaguardas[a]=1;
+      saveFicha(); updateComputed(); };
+    svWrap.appendChild(chip);
+  });
+  svBox.appendChild(svWrap);
+
+  // perícias (clique cicla: sem proficiência → proficiente → especialização)
+  const skBox = panel.querySelector(".ficha-skills");
+  skBox.innerHTML = "";
+  const pp = 10 + mod(ficha.atr.SAB) + (ficha.pericias["Percepção"]||0)*r.p;
+  skBox.appendChild(el("div","slots-title",'<span>Perícias</span><span class="pp">Percepção Passiva '+pp+'</span>'));
+  const grid = el("div","skills-grid");
+  (DATA.pericias||[]).forEach(([nm,atr])=>{
+    const st = ficha.pericias[nm]||0;
+    const bonus = mod(ficha.atr[atr]) + st*r.p;
+    const row = el("button","skill-row"+(st===1?" prof":st===2?" exp":""),
+      '<span class="sk-ic">'+(st===2?"★":st===1?"●":"○")+'</span>'+
+      '<span class="sk-bn">'+fmtMod(bonus)+'</span>'+
+      '<span class="sk-nm">'+esc(nm)+'</span><span class="sk-atr">'+atr+'</span>');
+    row.title = st===0?"Sem proficiência — clique para marcar proficiência"
+      : st===1?"Proficiente — clique para marcar especialização (dobro da proficiência)"
+      : "Especialização — clique para limpar";
+    row.onclick = ()=>{ const nx=(st+1)%3;
+      if(nx) ficha.pericias[nm]=nx; else delete ficha.pericias[nm];
+      saveFicha(); updateComputed(); };
+    grid.appendChild(row);
+  });
+  skBox.appendChild(grid);
+  skBox.appendChild(el("div","sk-legend","○ sem proficiência · ● proficiente · ★ especialização"));
 
   // stats de conjuração
   panel.querySelector(".ficha-stats").innerHTML =
@@ -155,13 +249,14 @@ function updateComputed(){
     .sort((a,b)=> a.nivel-b.nivel || a.nome.localeCompare(b.nome,"pt"));
   const nTruques = spells.filter(m=>m.nivel===0).length;
   const nMagias  = spells.filter(m=>m.nivel>0).length;
+  const brk = (base,bonus)=> bonus?' title="'+base+' da classe + '+bonus+' de talentos"':"";
   let lim = "";
-  if(r.c.truques){
-    lim += '<span class="lim'+(nTruques>r.truques?" over":nTruques===r.truques?" full":"")+'">Truques <b>'+nTruques+'/'+r.truques+'</b></span>';
+  if(r.truques>0){
+    lim += '<span class="lim'+(nTruques>r.truques?" over":nTruques===r.truques?" full":"")+'"'+brk(r.truquesClasse,r.talentos.truques)+'>Truques <b>'+nTruques+'/'+r.truques+'</b>'+(r.talentos.truques?" ✦":"")+'</span>';
   }else{
     lim += '<span class="lim muted">Sem truques de classe</span>';
   }
-  lim += '<span class="lim'+(nMagias>r.preparadas?" over":nMagias===r.preparadas?" full":"")+'">Magias preparadas <b>'+nMagias+'/'+r.preparadas+'</b></span>';
+  lim += '<span class="lim'+(nMagias>r.preparadas?" over":nMagias===r.preparadas?" full":"")+'"'+brk(r.preparadasClasse,r.talentos.preparadas)+'>Magias preparadas <b>'+nMagias+'/'+r.preparadas+'</b>'+(r.talentos.preparadas?" ✦":"")+'</span>';
   lim += '<span class="lim muted">Círculo máximo: <b>'+r.maxCirculo+'º</b></span>';
   panel.querySelector(".ficha-limits").innerHTML = lim;
 
@@ -245,6 +340,14 @@ body{font-family:"Georgia","Times New Roman",serif;color:#241c10;
 .slots .g{font-size:12px;white-space:nowrap}
 .slots .g b{margin-right:4px}
 .slots .o{font-size:13px;letter-spacing:2px}
+.svrow{display:flex;gap:8px;flex-wrap:wrap;font-size:11px;margin-bottom:4px}
+.sv{border:1px solid #b09a6a;border-radius:5px;padding:2px 8px;color:#5a4a30}
+.sv.on{background:#f7f1e1;color:#241c10;font-weight:bold}
+.skcols{columns:2;column-gap:26px;font-size:10.5px}
+.ski{break-inside:avoid;padding:1.5px 0;color:#5a4a30;border-bottom:1px dotted #e2d5b3}
+.ski.on{color:#241c10;font-weight:bold}
+.ski i{font-style:italic;color:#7a6a45;font-weight:normal;font-size:9px}
+h3 .ppx{float:right;font-size:9px;color:#5a4a30;text-transform:none;letter-spacing:0}
 h3{font-size:12px;letter-spacing:1.2px;text-transform:uppercase;color:#7a1f2b;
   border-bottom:1px solid #b09a6a;margin:12px 0 4px;padding-bottom:2px}
 table{width:100%;border-collapse:collapse;font-size:11px}
@@ -273,8 +376,24 @@ function buildFichaDoc(){
     '<div class="s"><span class="n">Conjuração</span><span class="v">'+esc(r.c.atributo)+'</span></div>'+
     '<div class="s"><span class="n">CD de Magia</span><span class="v">'+r.cd+'</span></div>'+
     '<div class="s"><span class="n">Ataque Mágico</span><span class="v">'+fmtMod(r.atk)+'</span></div>'+
-    (r.c.truques?'<div class="s"><span class="n">Truques</span><span class="v">'+r.truques+'</span></div>':"")+
+    (r.truques>0?'<div class="s"><span class="n">Truques</span><span class="v">'+r.truques+'</span></div>':"")+
     '<div class="s"><span class="n">Preparadas</span><span class="v">'+r.preparadas+'</span></div>';
+  let saves = '<h3>Salvaguardas</h3><div class="svrow">';
+  ATRS.forEach(a=>{
+    const on = !!ficha.salvaguardas[a];
+    const b = mod(ficha.atr[a]) + (on?r.p:0);
+    saves += '<span class="sv'+(on?" on":"")+'">'+(on?"●":"○")+" "+a+" "+fmtMod(b)+'</span>';
+  });
+  saves += '</div>';
+  const pp = 10 + mod(ficha.atr.SAB) + (ficha.pericias["Percepção"]||0)*r.p;
+  let skills = '<h3>Perícias <span class="ppx">Percepção Passiva '+pp+'</span></h3><div class="skcols">';
+  (DATA.pericias||[]).forEach(([nm,atr])=>{
+    const st = ficha.pericias[nm]||0;
+    const b = mod(ficha.atr[atr]) + st*r.p;
+    skills += '<div class="ski'+(st?" on":"")+'">'+(st===2?"★":st===1?"●":"○")+' <b>'+fmtMod(b)+'</b> '+esc(nm)+' <i>('+atr+')</i></div>';
+  });
+  skills += '</div>';
+
   let slotRow = "";
   r.slots.forEach(s=>{ slotRow += '<span class="g"><b>'+s.circulo+'º</b><span class="o">'+"○".repeat(s.qtd)+'</span></span>'; });
   const slots = '<div class="slots"><div class="t">'+(r.c.conjurador==="pacto"?"Espaços de Pacto (mesmo círculo)":"Espaços de Magia")+
@@ -292,6 +411,17 @@ function buildFichaDoc(){
   });
   if(!spells.length) lists = '<h3>Magias</h3><p style="font-size:11px;font-style:italic">Nenhuma magia marcada no grimório.</p>';
 
+  let talentos = "";
+  const escolhidos = (window.TALENTOS_DATA||[]).filter(f=>ficha.talentos[f.id]);
+  if(escolhidos.length){
+    talentos = '<h3>Talentos</h3><table>';
+    escolhidos.forEach(f=>{
+      const q = ficha.talentos[f.id];
+      talentos += '<tr><td class="nm">'+esc(f.nome)+(q>1?" ×"+q:"")+'</td><td colspan="2">'+esc(f.resumo)+'</td></tr>';
+    });
+    talentos += '</table>';
+  }
+
   let notes = '<div class="notes"><h3 style="border:none;margin:0 0 4px">Anotações</h3>';
   for(let i=0;i<4;i++) notes += '<div class="l"></div>';
   notes += '</div>';
@@ -302,7 +432,7 @@ function buildFichaDoc(){
       '<div class="hd"><h1>'+esc(nome)+'</h1><div class="cl">'+esc(fichaClasse)+' · Nível '+r.n+'<br>D&amp;D 2024</div></div>'+
       '<div class="atrs">'+atrs+'</div>'+
       '<div class="stats">'+stats+'</div>'+
-      slots+lists+notes+
+      saves+skills+slots+talentos+lists+notes+
       '<div class="ft">Grimório D&D 2024 — ficha simplificada de conjurador</div>'+
     '</div>'+
     '<scr'+'ipt>window.onload=function(){setTimeout(function(){window.focus();window.print();},300);};</scr'+'ipt>'+

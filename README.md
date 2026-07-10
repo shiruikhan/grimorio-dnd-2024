@@ -17,6 +17,8 @@ Use a **versão online** no link acima, ou baixe e abra `index.html` no navegado
 - **Grimório pessoal**: clique na estrela (☆/★) para marcar as magias conhecidas. Salvo automaticamente no navegador (um grimório por classe).
 - **Detalhes completos** de cada magia: conjuração, alcance, componentes, duração e descrição integral.
 - **Ficha simplificada** (botão 🧙 Ficha): nome, nível e atributos do personagem. Calcula automaticamente (regras 2024) proficiência, CD de magia, ataque mágico, truques e magias preparadas permitidos e espaços de magia por círculo — com caixinhas de uso e botão de descanso longo. Tem exportação própria em folha A4 imprimível.
+- **Talentos de conjuração** na ficha: Iniciado em Magia (repetível), Conjurador Ritualista, Telecinético, Telepático, Tocado Pelas Sombras e Tocado Por Fadas ajustam os limites de truques e magias preparadas (✦ indica bônus de talento).
+- **Salvaguardas e perícias** na ficha: as salvaguardas da classe já vêm marcadas; clique nas perícias para alternar ○ sem proficiência → ● proficiente → ★ especialização, com bônus e Percepção Passiva calculados na hora.
 - **Imprimir / PDF**: gera uma folha limpa só com as magias do seu grimório (botão Imprimir → "Salvar como PDF").
 - **Exportar / Importar** o grimório em `.json` para backup ou levar para outro computador.
 
@@ -30,7 +32,8 @@ grimorio/
 └── data/
     ├── magias.js       dados carregados pela página
     ├── magias.json     mesmos dados em JSON puro (backup/portável)
-    └── classes.js      tabelas de conjuração por classe (D&D 2024)
+    ├── classes.js      tabelas de conjuração por classe (D&D 2024)
+    └── talentos.js     talentos que alteram truques/magias preparadas
 ```
 
 ## Observações

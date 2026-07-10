@@ -30,15 +30,24 @@ window.CLASSES_DATA = (function(){
 
   return {
     slots: { completo: SLOTS_COMPLETO, meio: SLOTS_MEIO, pacto: PACTO },
+    // Perícias e seus atributos — tabela do capítulo 1 do livro
+    pericias: [
+      ["Acrobacia","DES"],["Arcanismo","INT"],["Atletismo","FOR"],["Atuação","CAR"],
+      ["Enganação","CAR"],["Furtividade","DES"],["História","INT"],["Intimidação","CAR"],
+      ["Intuição","SAB"],["Investigação","INT"],["Lidar com Animais","SAB"],["Medicina","SAB"],
+      ["Natureza","INT"],["Percepção","SAB"],["Persuasão","CAR"],["Prestidigitação","DES"],
+      ["Religião","INT"],["Sobrevivência","SAB"]
+    ],
+    // salvaguardas = proficiências de salvaguarda da classe (Traços Básicos)
     classes: {
-      "Bardo":      { atributo:"Carisma",      chave:"CAR", conjurador:"completo", truques:T_235, preparadas:PREP_COMPLETO },
-      "Bruxo":      { atributo:"Carisma",      chave:"CAR", conjurador:"pacto",    truques:T_235, preparadas:[2,3,4,5,6,7,8,9,10,10,11,11,12,12,13,13,14,14,15,15] },
-      "Clérigo":    { atributo:"Sabedoria",    chave:"SAB", conjurador:"completo", truques:T_345, preparadas:PREP_COMPLETO },
-      "Druida":     { atributo:"Sabedoria",    chave:"SAB", conjurador:"completo", truques:T_235, preparadas:PREP_COMPLETO },
-      "Feiticeiro": { atributo:"Carisma",      chave:"CAR", conjurador:"completo", truques:T_456, preparadas:[2,4,6,7,9,10,11,12,14,15,16,16,17,17,18,18,19,20,21,22] },
-      "Guardião":   { atributo:"Sabedoria",    chave:"SAB", conjurador:"meio",     truques:null,  preparadas:PREP_MEIO },
-      "Mago":       { atributo:"Inteligência", chave:"INT", conjurador:"completo", truques:T_345, preparadas:[4,5,6,7,9,10,11,12,14,15,16,16,17,18,19,21,22,23,24,25] },
-      "Paladino":   { atributo:"Carisma",      chave:"CAR", conjurador:"meio",     truques:null,  preparadas:PREP_MEIO }
+      "Bardo":      { atributo:"Carisma",      chave:"CAR", conjurador:"completo", truques:T_235, preparadas:PREP_COMPLETO, salvaguardas:["DES","CAR"] },
+      "Bruxo":      { atributo:"Carisma",      chave:"CAR", conjurador:"pacto",    truques:T_235, preparadas:[2,3,4,5,6,7,8,9,10,10,11,11,12,12,13,13,14,14,15,15], salvaguardas:["SAB","CAR"] },
+      "Clérigo":    { atributo:"Sabedoria",    chave:"SAB", conjurador:"completo", truques:T_345, preparadas:PREP_COMPLETO, salvaguardas:["SAB","CAR"] },
+      "Druida":     { atributo:"Sabedoria",    chave:"SAB", conjurador:"completo", truques:T_235, preparadas:PREP_COMPLETO, salvaguardas:["INT","SAB"] },
+      "Feiticeiro": { atributo:"Carisma",      chave:"CAR", conjurador:"completo", truques:T_456, preparadas:[2,4,6,7,9,10,11,12,14,15,16,16,17,17,18,18,19,20,21,22], salvaguardas:["CON","CAR"] },
+      "Guardião":   { atributo:"Sabedoria",    chave:"SAB", conjurador:"meio",     truques:null,  preparadas:PREP_MEIO, salvaguardas:["FOR","DES"] },
+      "Mago":       { atributo:"Inteligência", chave:"INT", conjurador:"completo", truques:T_345, preparadas:[4,5,6,7,9,10,11,12,14,15,16,16,17,18,19,21,22,23,24,25], salvaguardas:["INT","SAB"] },
+      "Paladino":   { atributo:"Carisma",      chave:"CAR", conjurador:"meio",     truques:null,  preparadas:PREP_MEIO, salvaguardas:["SAB","CAR"] }
     }
   };
 })();

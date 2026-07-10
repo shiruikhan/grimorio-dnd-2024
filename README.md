@@ -16,6 +16,7 @@ Use a **versão online** no link acima, ou baixe e abra `index.html` no navegado
 - **Busca** por nome.
 - **Grimório pessoal**: clique na estrela (☆/★) para marcar as magias conhecidas. Salvo automaticamente no navegador (um grimório por classe).
 - **Detalhes completos** de cada magia: conjuração, alcance, componentes, duração e descrição integral.
+- **Ficha simplificada** (botão 🧙 Ficha): nome, nível e atributos do personagem. Calcula automaticamente (regras 2024) proficiência, CD de magia, ataque mágico, truques e magias preparadas permitidos e espaços de magia por círculo — com caixinhas de uso e botão de descanso longo. Tem exportação própria em folha A4 imprimível.
 - **Imprimir / PDF**: gera uma folha limpa só com as magias do seu grimório (botão Imprimir → "Salvar como PDF").
 - **Exportar / Importar** o grimório em `.json` para backup ou levar para outro computador.
 
@@ -24,10 +25,12 @@ Use a **versão online** no link acima, ou baixe e abra `index.html` no navegado
 grimorio/
 ├── index.html          página principal
 ├── css/style.css       estilos
-├── js/app.js           lógica
+├── js/app.js           lógica do grimório
+├── js/ficha.js         ficha de personagem simplificada
 └── data/
     ├── magias.js       dados carregados pela página
-    └── magias.json     mesmos dados em JSON puro (backup/portável)
+    ├── magias.json     mesmos dados em JSON puro (backup/portável)
+    └── classes.js      tabelas de conjuração por classe (D&D 2024)
 ```
 
 ## Observações

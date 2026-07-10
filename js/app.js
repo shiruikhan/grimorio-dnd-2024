@@ -17,8 +17,16 @@ function loadGrim(){
   CLASSES.forEach(c=>{ try{ state.grimorio[c]=new Set(JSON.parse(localStorage.getItem("grim_"+c)||"[]")); }
     catch(e){ state.grimorio[c]=new Set(); } });
 }
-function saveGrim(c){ localStorage.setItem("grim_"+c, JSON.stringify([...state.grimorio[c]])); }
+function saveGrim(c){ localStorage.setItem("grim_"+c, JSON.stringify([...state.grimorio[c]])); notifyGrim(); }
 function known(c){ return state.grimorio[c] || (state.grimorio[c]=new Set()); }
+function notifyGrim(){ document.dispatchEvent(new CustomEvent("grim:change")); }
+
+// API mínima para a ficha (js/ficha.js) — somente leitura
+window.GRIMORIO_API = {
+  classe: ()=>state.classe,
+  magiasDoGrimorio: (c)=>{ const cls=c||state.classe;
+    return MAGIAS.filter(m=>m.classes.includes(cls)&&known(cls).has(m.nome)); }
+};
 
 // ---- helpers ----
 function schoolColor(s){ return "var("+(SCHOOL_VAR[s]||"--muted")+")"; }
@@ -33,7 +41,7 @@ function buildClasses(){
   CLASSES.forEach(c=>{
     const b=el("button",c===state.classe?"active":"",c);
     b.onclick=()=>{ state.classe=c; state.selected=null; localStorage.setItem("grim_classe",c);
-      closeDetail(); buildClasses(); render(); document.getElementById("detailPane").innerHTML=emptyHTML(); };
+      closeDetail(); buildClasses(); render(); document.getElementById("detailPane").innerHTML=emptyHTML(); notifyGrim(); };
     nav.appendChild(b);
   });
 }

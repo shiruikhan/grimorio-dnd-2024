@@ -78,6 +78,7 @@
   </div>
   <div class="grimactions">
     <span class="count" id="knownCount">0 no grimório</span>
+    <button id="btnFicha" title="Ficha de personagem simplificada (nível, atributos, magias e espaços)">🧙 Ficha</button>
     <button id="btnPrint" title="Exportar PDF só das magias do grimório (escolha 'Salvar como PDF' no diálogo)">📄 Exportar PDF</button>
     <button id="btnExport" title="Backup do grimório (.json)">⭳ Backup</button>
     <button id="btnImport" title="Restaurar grimório de um backup (.json)">⭱ Restaurar</button>
@@ -96,7 +97,11 @@
   </section>
 </main>
 
+<div id="fichaOverlay" class="ficha-overlay" hidden></div>
+
 <script src="data/magias.js"></script>
+<script src="data/classes.js"></script>
 <script src="js/app.js"></script>
+<script src="js/ficha.js"></script>
 </body>
 </html>

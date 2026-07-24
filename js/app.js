@@ -6,11 +6,23 @@ const SCHOOL_VAR = {"Abjuração":"--abj","Adivinhação":"--adv","Encantamento"
 const SCHOOL_HEX = {"Abjuração":"#2f5d8a","Adivinhação":"#6b4e9e","Encantamento":"#a83b7a","Evocação":"#9e2b25","Ilusão":"#5b3f93","Invocação":"#b5651d","Necromancia":"#3f6b3a","Transmutação":"#1f7a7a"};
 function schoolHex(s){ return SCHOOL_HEX[s]||"#7a1f2b"; }
 
+function loadSelectedClasses(){
+  try{
+    const arr = JSON.parse(localStorage.getItem("grim_classes")||"null");
+    if(Array.isArray(arr) && arr.length) return new Set(arr.filter(c=>CLASSES.includes(c)));
+  }catch(e){}
+  const legacy = localStorage.getItem("grim_classe");
+  return new Set([legacy && CLASSES.includes(legacy) ? legacy : "Mago"]);
+}
+function saveSelectedClasses(){ localStorage.setItem("grim_classes", JSON.stringify([...state.classes])); }
+
 const state = {
-  classe: localStorage.getItem("grim_classe") || "Mago",
+  classes: loadSelectedClasses(),
   levels: new Set(), school:"", ritual:false, conc:false, known:false, homebrew:false,
   search:"", selected:null, grimorio:{}
 };
+function selectedClasses(){ return CLASSES.filter(c=>state.classes.has(c)); }
+function knownUnion(){ const u=new Set(); state.classes.forEach(c=>known(c).forEach(n=>u.add(n))); return u; }
 
 // ---- persistence ----
 function loadGrim(){
@@ -23,8 +35,8 @@ function notifyGrim(){ document.dispatchEvent(new CustomEvent("grim:change")); }
 
 // API mínima para a ficha (js/ficha.js) — somente leitura
 window.GRIMORIO_API = {
-  classe: ()=>state.classe,
-  magiasDoGrimorio: (c)=>{ const cls=c||state.classe;
+  classe: ()=>selectedClasses()[0]||"Mago",
+  magiasDoGrimorio: (c)=>{ const cls=c||selectedClasses()[0];
     return MAGIAS.filter(m=>m.classes.includes(cls)&&known(cls).has(m.nome)); }
 };
 
@@ -39,9 +51,16 @@ function fmtDesc(t){ return esc(t).replace(/(Usando um Espaço de Magia de Círc
 function buildClasses(){
   const nav=document.getElementById("classes"); nav.innerHTML="";
   CLASSES.forEach(c=>{
-    const b=el("button",c===state.classe?"active":"",c);
-    b.onclick=()=>{ state.classe=c; state.selected=null; localStorage.setItem("grim_classe",c);
-      closeDetail(); buildClasses(); render(); document.getElementById("detailPane").innerHTML=emptyHTML(); notifyGrim(); };
+    const b=el("button",state.classes.has(c)?"active":"",c);
+    b.title="Multiclasse: clique para adicionar/remover esta classe do filtro";
+    b.onclick=()=>{
+      if(state.classes.has(c)){
+        if(state.classes.size===1) return; // mantém sempre ao menos uma classe selecionada
+        state.classes.delete(c);
+      } else state.classes.add(c);
+      state.selected=null; saveSelectedClasses();
+      closeDetail(); buildClasses(); render(); document.getElementById("detailPane").innerHTML=emptyHTML(); notifyGrim();
+    };
     nav.appendChild(b);
   });
 }
@@ -60,15 +79,16 @@ function buildSchoolFilter(){
 }
 
 // ---- filtering ----
-function classSpells(){ return MAGIAS.filter(m=>m.classes.includes(state.classe)); }
+function classSpells(){ return MAGIAS.filter(m=>m.classes.some(c=>state.classes.has(c))); }
 function filtered(){
   const q=state.search.trim().toLowerCase();
+  const ku=knownUnion();
   return classSpells().filter(m=>{
     if(state.levels.size && !state.levels.has(m.nivel)) return false;
     if(state.school && m.escola!==state.school) return false;
     if(state.ritual && !m.ritual) return false;
     if(state.conc && !m.concentracao) return false;
-    if(state.known && !known(state.classe).has(m.nome)) return false;
+    if(state.known && !ku.has(m.nome)) return false;
     if(state.homebrew && !m.homebrew) return false;
     if(q && !m.nome.toLowerCase().includes(q)) return false;
     return true;
@@ -76,24 +96,27 @@ function filtered(){
 }
 
 // ---- render list ----
+function spellClasses(m){ return m.classes.filter(c=>state.classes.has(c)); }
 function render(){
   updateCount();
   const pane=document.getElementById("listPane"); pane.innerHTML="";
   const list=filtered();
   if(!list.length){ pane.appendChild(el("div","empty-list","Nenhuma magia encontrada com esses filtros.")); return; }
+  const ku=knownUnion();
+  const multi=state.classes.size>1;
   const byLv={}; list.forEach(m=>{ (byLv[m.nivel]=byLv[m.nivel]||[]).push(m); });
   Object.keys(byLv).map(Number).sort((a,b)=>a-b).forEach(lv=>{
     const arr=byLv[lv].sort((a,b)=>a.nome.localeCompare(b.nome,"pt"));
     const g=el("div","circle-group");
-    const kc=arr.filter(m=>known(state.classe).has(m.nome)).length;
+    const kc=arr.filter(m=>ku.has(m.nome)).length;
     g.appendChild(el("div","circle-head","<span>"+circleName(lv)+"</span><span class='n'>"+kc+"/"+arr.length+"</span>"));
     arr.forEach(m=>{
       const row=el("div","spell-row"+(state.selected===m.nome?" sel":""));
-      const on=known(state.classe).has(m.nome);
+      const on=ku.has(m.nome);
       const star=el("span","star"+(on?" on":""),on?"★":"☆"); star.title="Adicionar/remover do grimório";
       star.setAttribute("role","button"); star.setAttribute("aria-pressed",on);
       star.setAttribute("aria-label",(on?"Remover do grimório: ":"Adicionar ao grimório: ")+m.nome); star.tabIndex=0;
-      const toggleStar=(e)=>{ e.stopPropagation(); toggleKnown(m.nome); };
+      const toggleStar=(e)=>{ e.stopPropagation(); toggleKnown(m); };
       star.onclick=toggleStar;
       star.onkeydown=(e)=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); toggleStar(e); } };
       const main=el("div","row-main");
@@ -101,6 +124,7 @@ function render(){
       main.appendChild(el("span","row-meta",esc(m.tempo+" · "+m.alcance+(m.concentracao?" · Concentração":""))));
       const tags=el("span","tags");
       const dot=el("span","sch-dot"); dot.style.background=schoolColor(m.escola); dot.title=m.escola; tags.appendChild(dot);
+      if(multi) tags.appendChild(el("span","mini","·"+spellClasses(m).map(c=>c.slice(0,3)).join("/")));
       if(m.ritual) tags.appendChild(el("span","mini","R"));
       if(m.concentracao) tags.appendChild(el("span","mini","C"));
       if(m.homebrew){ const hb=el("span","mini hb","HB"); hb.title="Homebrew — fora do Livro do Jogador 2024"; tags.appendChild(hb); }
@@ -112,13 +136,16 @@ function render(){
     pane.appendChild(g);
   });
 }
-function toggleKnown(nome){
-  const k=known(state.classe);
-  if(k.has(nome)) k.delete(nome); else k.add(nome);
-  saveGrim(state.classe); render();
-  if(state.selected){ const m=MAGIAS.find(x=>x.nome===state.selected); if(m)showDetail(m); }
+function toggleKnown(m){
+  const cs=spellClasses(m);
+  if(!cs.length) return;
+  const target=!cs.some(c=>known(c).has(m.nome));
+  cs.forEach(c=>{ const k=known(c); if(target) k.add(m.nome); else k.delete(m.nome); });
+  cs.forEach(saveGrim);
+  render();
+  if(state.selected){ const s=MAGIAS.find(x=>x.nome===state.selected); if(s)showDetail(s); }
 }
-function updateCount(){ document.getElementById("knownCount").textContent = known(state.classe).size+" no grimório"; }
+function updateCount(){ document.getElementById("knownCount").textContent = knownUnion().size+" no grimório"; }
 
 // ---- detail ----
 function emptyHTML(){ return '<div class="empty"><span class="logo big">✶</span><p>Selecione uma magia para ver os detalhes.</p></div>'; }
@@ -126,7 +153,7 @@ function closeDetail(){ document.body.classList.remove("detail-open"); }
 function showDetail(m){
   const pane=document.getElementById("detailPane");
   document.body.classList.add("detail-open");
-  const on=known(state.classe).has(m.nome);
+  const on=knownUnion().has(m.nome);
   const lvlTxt = m.nivel===0 ? "Truque de "+m.escola : m.nivel+"º Círculo · "+m.escola;
   let badges="";
   if(m.homebrew) badges+='<span class="badge hb" title="Fora do Livro do Jogador 2024">✦ Homebrew</span>';
@@ -147,7 +174,7 @@ function showDetail(m){
     '<div class="desc">'+fmtDesc(m.descricao)+'</div>'+
     '<div class="classlist">Classes: '+esc(m.classes.join(", "))+'</div>'+
     '<button class="detailbtn'+(on?" on":"")+'" id="dbtn">'+(on?"★ No grimório — remover":"☆ Adicionar ao grimório")+'</button></div>';
-  document.getElementById("dbtn").onclick=()=>toggleKnown(m.nome);
+  document.getElementById("dbtn").onclick=()=>toggleKnown(m);
   const bk=document.getElementById("dback"); if(bk) bk.onclick=closeDetail;
 }
 
@@ -196,7 +223,7 @@ function cropMarks(){
   });
   return h;
 }
-function cardHTML(m,cls){
+function cardHTML(m,clsLabel){
   const c=schoolHex(m.escola);
   const lvBadge=m.nivel===0?"T":m.nivel;
   const foot=(m.nivel===0?"Truque":m.nivel+"º Círculo")+" · "+m.escola+
@@ -210,34 +237,43 @@ function cardHTML(m,cls){
       '<div class="cell"><span class="lbl">Duração</span><span class="val">'+esc(m.duracao)+'</span></div>'+
     '</div>'+
     '<div class="d">'+fmtDesc(m.descricao)+'</div>'+
-    '<div class="foot"><span>'+esc(cls)+'</span><span>'+esc(foot)+'</span></div>'+
+    '<div class="foot"><span>'+esc(clsLabel)+'</span><span>'+esc(foot)+'</span></div>'+
   '</div>';
 }
-function buildExportDoc(cls){
-  const k=known(cls);
-  const spells=MAGIAS.filter(m=>m.classes.includes(cls)&&k.has(m.nome))
-    .sort((a,b)=> a.nivel-b.nivel || a.nome.localeCompare(b.nome,"pt"));
+function buildExportDoc(classesArr){
+  // uma magia conhecida em mais de uma classe selecionada aparece uma única vez,
+  // com o rodapé listando todas as classes pelas quais ela é conhecida
+  const byName=new Map();
+  classesArr.forEach(c=>{
+    const k=known(c);
+    MAGIAS.forEach(m=>{
+      if(!m.classes.includes(c) || !k.has(m.nome)) return;
+      if(!byName.has(m.nome)) byName.set(m.nome,{m,classes:[]});
+      byName.get(m.nome).classes.push(c);
+    });
+  });
+  const spells=[...byName.values()].sort((a,b)=> a.m.nivel-b.m.nivel || a.m.nome.localeCompare(b.m.nome,"pt"));
   if(!spells.length) return null;
   const PER=4; let pages="";
   for(let i=0;i<spells.length;i+=PER){
     const chunk=spells.slice(i,i+PER);
     let slots="";
     for(let j=0;j<PER;j++){
-      slots+='<div class="slot">'+(chunk[j]?cardHTML(chunk[j],cls):"")+'</div>';
+      slots+='<div class="slot">'+(chunk[j]?cardHTML(chunk[j].m,chunk[j].classes.join(" / ")):"")+'</div>';
     }
     pages+='<div class="page">'+cropMarks()+'<div class="grid">'+slots+'</div></div>';
   }
   const fit='document.querySelectorAll(".card .d").forEach(function(d){var fs=parseFloat(getComputedStyle(d).fontSize);var g=0;while(d.scrollHeight>d.clientHeight+0.5&&fs>6&&g<80){fs-=0.4;d.style.fontSize=fs+"px";d.style.lineHeight="1.3";g++;}});';
   return '<!DOCTYPE html><html lang="pt-BR"><head><meta charset="utf-8">'+
-    '<title>Cartas de '+esc(cls)+' — D&D 2024</title><style>'+PRINT_CSS+'</style></head><body>'+
+    '<title>Cartas de '+esc(classesArr.join(" / "))+' — D&D 2024</title><style>'+PRINT_CSS+'</style></head><body>'+
     pages+
     '<scr'+'ipt>window.onload=function(){'+fit+'setTimeout(function(){window.focus();window.print();},400);};</scr'+'ipt>'+
     '</body></html>';
 }
 function exportPDF(){
-  const cls=state.classe;
+  const cls=selectedClasses();
   const doc=buildExportDoc(cls);
-  if(!doc){ alert("O grimório de "+cls+" está vazio.\nMarque magias com a estrela (★) antes de exportar."); return; }
+  if(!doc){ alert("O grimório de "+cls.join(" / ")+" está vazio.\nMarque magias com a estrela (★) antes de exportar."); return; }
   const w=window.open("","_blank");
   if(!w){ alert("Não foi possível abrir a janela de exportação.\nPermita pop-ups para este arquivo e tente de novo."); return; }
   w.document.open(); w.document.write(doc); w.document.close();
@@ -246,7 +282,7 @@ function exportPDF(){
 
 // ---- export / import grimório (.json) ----
 function exportGrim(){
-  const data={versao:1,classe:state.classe,gerado:new Date().toISOString(),
+  const data={versao:1,classes:selectedClasses(),gerado:new Date().toISOString(),
     grimorio:Object.fromEntries(CLASSES.map(c=>[c,[...known(c)]]))};
   const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
   const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
@@ -276,8 +312,9 @@ function init(){
   document.getElementById("btnImport").onclick=()=>document.getElementById("importFile").click();
   document.getElementById("importFile").onchange=e=>{ if(e.target.files[0]) importGrim(e.target.files[0]); e.target.value=""; };
   document.getElementById("btnClear").onclick=()=>{
-    if(confirm("Limpar todas as magias do grimório de "+state.classe+"?")){
-      state.grimorio[state.classe]=new Set(); saveGrim(state.classe); closeDetail(); render();
+    const cls=selectedClasses();
+    if(confirm("Limpar todas as magias do grimório de "+cls.join(" / ")+"?")){
+      cls.forEach(c=>{ state.grimorio[c]=new Set(); saveGrim(c); }); closeDetail(); render();
       document.getElementById("detailPane").innerHTML=emptyHTML(); } };
   document.getElementById("detailPane").innerHTML=emptyHTML();
   render();

@@ -16,6 +16,23 @@ function loadSelectedClasses(){
 }
 function saveSelectedClasses(){ localStorage.setItem("grim_classes", JSON.stringify([...state.classes])); }
 
+function loadFilters(){
+  try{
+    const f = JSON.parse(localStorage.getItem("grim_filters")||"null");
+    if(!f || typeof f!=="object") return;
+    if(Array.isArray(f.levels)) state.levels = new Set(f.levels.filter(n=>Number.isInteger(n)&&n>=0&&n<=9));
+    if(typeof f.school==="string") state.school = f.school;
+    state.ritual = !!f.ritual; state.conc = !!f.conc; state.material = !!f.material;
+    state.known = !!f.known; state.homebrew = !!f.homebrew;
+  }catch(e){}
+}
+function saveFilters(){
+  localStorage.setItem("grim_filters", JSON.stringify({
+    levels:[...state.levels], school:state.school, ritual:state.ritual,
+    conc:state.conc, material:state.material, known:state.known, homebrew:state.homebrew
+  }));
+}
+
 const state = {
   classes: loadSelectedClasses(),
   levels: new Set(), school:"", ritual:false, conc:false, material:false, known:false, homebrew:false,
@@ -73,14 +90,17 @@ function buildLevelFilter(){
   const box=document.getElementById("levelFilter"); box.innerHTML="";
   const tk=el("button","tk","Truques"); tk.dataset.lv="0"; box.appendChild(tk);
   for(let i=1;i<=9;i++){ const b=el("button",null,i+"º"); b.dataset.lv=i; box.appendChild(b); }
-  box.querySelectorAll("button").forEach(b=>{ b.onclick=()=>{ const lv=+b.dataset.lv;
+  box.querySelectorAll("button").forEach(b=>{
+    if(state.levels.has(+b.dataset.lv)) b.classList.add("active");
+    b.onclick=()=>{ const lv=+b.dataset.lv;
     if(state.levels.has(lv)) state.levels.delete(lv); else state.levels.add(lv);
-    b.classList.toggle("active"); render(); }; });
+    b.classList.toggle("active"); saveFilters(); render(); }; });
 }
 function buildSchoolFilter(){
   const sel=document.getElementById("schoolFilter");
   Object.keys(SCHOOL_VAR).forEach(s=>{ const o=el("option",null,s); o.value=s; sel.appendChild(o); });
-  sel.onchange=()=>{ state.school=sel.value; render(); };
+  sel.value=state.school;
+  sel.onchange=()=>{ state.school=sel.value; saveFilters(); render(); };
 }
 
 // ---- filtering ----
@@ -157,10 +177,19 @@ function updateCount(){ document.getElementById("knownCount").textContent = know
 
 // ---- detail ----
 function emptyHTML(){ return '<div class="empty"><span class="logo big">✶</span><p>Selecione uma magia para ver os detalhes.</p></div>'; }
-function closeDetail(){ document.body.classList.remove("detail-open"); }
+function closeDetail(){
+  if(!document.body.classList.contains("detail-open")) return;
+  document.body.classList.remove("detail-open");
+  if(history.state && history.state.grimDetail) history.back();
+}
+window.addEventListener("popstate",e=>{
+  if(!(e.state && e.state.grimDetail)) document.body.classList.remove("detail-open");
+});
 function showDetail(m){
   const pane=document.getElementById("detailPane");
+  const wasOpen=document.body.classList.contains("detail-open");
   document.body.classList.add("detail-open");
+  if(!wasOpen) history.pushState({grimDetail:true},"",location.href);
   const on=knownUnion().has(m.nome);
   const lvlTxt = m.nivel===0 ? "Truque de "+m.escola : m.nivel+"º Círculo · "+m.escola;
   let badges="";
@@ -306,17 +335,41 @@ function importGrim(file){
   r.readAsText(file);
 }
 
+// ---- filtros: contador (badge do drawer mobile) ----
+function updateFilterCount(){
+  const n=(state.school?1:0)+state.ritual+state.conc+state.material+state.known+state.homebrew;
+  const badge=document.getElementById("filterCount");
+  badge.textContent=n; badge.hidden=!n;
+}
+
 // ---- init ----
 function init(){
-  loadGrim();
+  loadGrim(); loadFilters();
   buildClasses(); buildLevelFilter(); buildSchoolFilter();
-  document.getElementById("search").oninput=e=>{ state.search=e.target.value; render(); };
-  document.getElementById("fRitual").onchange=e=>{ state.ritual=e.target.checked; render(); };
-  document.getElementById("fConc").onchange=e=>{ state.conc=e.target.checked; render(); };
-  document.getElementById("fMaterial").onchange=e=>{ state.material=e.target.checked; render(); };
-  document.getElementById("fKnown").onchange=e=>{ state.known=e.target.checked;
+  const search=document.getElementById("search"), searchClear=document.getElementById("searchClear");
+  search.value=state.search;
+  const updateSearchClear=()=>{ searchClear.hidden=!search.value; };
+  search.oninput=e=>{ state.search=e.target.value; updateSearchClear(); render(); };
+  searchClear.onclick=()=>{ search.value=""; state.search=""; updateSearchClear(); render(); search.focus(); };
+  updateSearchClear();
+
+  const fRitual=document.getElementById("fRitual"), fConc=document.getElementById("fConc"),
+    fMaterial=document.getElementById("fMaterial"), fKnown=document.getElementById("fKnown"),
+    fHomebrew=document.getElementById("fHomebrew");
+  fRitual.checked=state.ritual; fConc.checked=state.conc; fMaterial.checked=state.material;
+  fKnown.checked=state.known; fHomebrew.checked=state.homebrew;
+  document.body.classList.toggle("grim-mode",state.known);
+  fRitual.onchange=e=>{ state.ritual=e.target.checked; saveFilters(); updateFilterCount(); render(); };
+  fConc.onchange=e=>{ state.conc=e.target.checked; saveFilters(); updateFilterCount(); render(); };
+  fMaterial.onchange=e=>{ state.material=e.target.checked; saveFilters(); updateFilterCount(); render(); };
+  fKnown.onchange=e=>{ state.known=e.target.checked; saveFilters(); updateFilterCount();
     document.body.classList.toggle("grim-mode",e.target.checked); render(); };
-  document.getElementById("fHomebrew").onchange=e=>{ state.homebrew=e.target.checked; render(); };
+  fHomebrew.onchange=e=>{ state.homebrew=e.target.checked; saveFilters(); updateFilterCount(); render(); };
+  updateFilterCount();
+
+  const btnFilters=document.getElementById("btnFilters"), filterPanel=document.getElementById("filterPanel");
+  btnFilters.onclick=()=>{ const open=filterPanel.classList.toggle("open"); btnFilters.setAttribute("aria-expanded",open); };
+
   document.getElementById("btnPrint").onclick=exportPDF;
   document.getElementById("btnExport").onclick=exportGrim;
   document.getElementById("btnImport").onclick=()=>document.getElementById("importFile").click();

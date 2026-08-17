@@ -21,8 +21,14 @@ button{font-family:inherit;cursor:pointer}
 .classes button:hover{color:var(--ink);border-color:var(--gold)}
 .classes button.active{background:var(--gold);color:#1a1410;border-color:var(--gold2);font-weight:600}
 .topactions{display:flex;align-items:center;gap:8px}
-.topactions #search{background:var(--panel2);border:1px solid var(--line);color:var(--ink);padding:8px 12px;border-radius:8px;width:200px;font-size:14px}
+.search-wrap{position:relative;width:200px}
+.topactions #search{background:var(--panel2);border:1px solid var(--line);color:var(--ink);padding:8px 30px 8px 12px;border-radius:8px;width:100%;font-size:14px}
 .topactions #search:focus{outline:none;border-color:var(--gold)}
+.topactions #search::-webkit-search-cancel-button{display:none}
+.search-clear{position:absolute;right:4px;top:50%;transform:translateY(-50%);width:26px;height:26px;
+  display:flex;align-items:center;justify-content:center;background:transparent;border:none;
+  color:var(--muted);font-size:13px;border-radius:50%}
+.search-clear:hover{color:var(--ink);background:var(--line)}
 .gh-link{display:inline-flex;align-items:center;gap:6px;color:var(--muted);font-size:12px;text-decoration:none;border:1px solid var(--line);padding:6px 10px;border-radius:8px;white-space:nowrap;transition:.15s}
 .gh-link:hover{color:var(--gold2);border-color:var(--gold)}
 .gh-link svg{flex:0 0 auto}
@@ -34,6 +40,7 @@ button{font-family:inherit;cursor:pointer}
 .levels button.tk{width:auto;padding:0 8px}
 .levels button:hover{color:var(--ink)}
 .levels button.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.filters-toggle{display:none}
 .filters{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 .filters select{background:var(--panel2);color:var(--ink);border:1px solid var(--line);padding:6px 8px;border-radius:6px}
 .chk{display:flex;align-items:center;gap:5px;font-size:13px;color:var(--muted);cursor:pointer}
@@ -189,7 +196,7 @@ body.ficha-open{overflow:hidden}
   .classes::-webkit-scrollbar{display:none}
   .classes button{flex:0 0 auto}
   .topactions{flex-basis:100%;order:3}
-  .topactions #search{flex:1;width:auto}
+  .search-wrap{flex:1;width:auto}
 
   /* Toolbar: níveis roláveis, alvos de toque maiores */
   .toolbar{gap:10px;padding:8px 12px}
@@ -200,12 +207,24 @@ body.ficha-open{overflow:hidden}
   .grimactions{width:100%}
   .grimactions button{padding:10px 12px}
 
+  /* Filtros viram um drawer colapsável — evita empurrar a lista pra baixo do teclado/toolbar */
+  .filters-toggle{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;
+    background:var(--panel2);color:var(--ink);border:1px solid var(--line);padding:9px 12px;
+    border-radius:8px;font-size:13.5px}
+  .filters-toggle .fcount{background:var(--gold);color:#1a1410;border-radius:10px;
+    padding:1px 7px;font-size:11px;font-weight:700;line-height:1.4}
+  .filters{display:none;width:100%;flex-direction:column;align-items:stretch;gap:10px;
+    padding:10px 2px 2px}
+  .filters.open{display:flex}
+  .filters select{width:100%;padding:9px 10px}
+  .filters .chk{padding:4px 2px}
+
   /* Lista ocupa a tela inteira; toques maiores */
   .layout{display:block;height:auto}
   .list-pane{height:auto;overflow:visible;border-right:none;padding-bottom:24px}
   .circle-head{position:static}
-  .spell-row{padding:13px 14px;gap:12px}
-  .star{font-size:24px;width:34px;padding:2px 0}
+  .spell-row{padding:9px 14px;gap:6px}
+  .star{font-size:24px;width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;padding:0}
   .mini{font-size:11px;padding:2px 5px}
 
   /* Detalhe vira painel deslizante em tela cheia, com botão Voltar */

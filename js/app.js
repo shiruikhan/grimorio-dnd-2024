@@ -175,7 +175,7 @@ function toggleKnown(m){
   cs.forEach(c=>{ const k=known(c); if(target) k.add(m.nome); else k.delete(m.nome); });
   cs.forEach(saveGrim);
   render();
-  if(state.selected){ const s=MAGIAS.find(x=>x.nome===state.selected); if(s)showDetail(s); }
+  updateDetailToggles();
 }
 function updateCount(){ document.getElementById("knownCount").textContent = knownUnion().size+" no grimório"; }
 
@@ -203,7 +203,14 @@ function showDetail(m){
   if(hasMaterial(m)) badges+='<span class="badge mat">Material</span>';
   badges+='<span class="badge" style="border-color:'+schoolColor(m.escola)+'">'+esc(m.escola)+'</span>';
   pane.innerHTML =
-    '<button class="detail-back" id="dback">‹ Voltar à lista</button>'+
+    // barra fixa do celular: voltar, nome (orientação quando a descrição é longa) e a estrela,
+    // para marcar no grimório sem rolar até o fim do texto
+    '<div class="detail-bar">'+
+      '<button class="detail-back" id="dback">‹ Voltar</button>'+
+      '<span class="detail-bar-nm">'+esc(m.nome)+'</span>'+
+      '<button class="detail-bar-star'+(on?" on":"")+'" id="dbarstar" aria-pressed="'+on+'"'+
+        ' aria-label="'+(on?"Remover do grimório":"Adicionar ao grimório")+'">'+(on?"★":"☆")+'</button>'+
+    '</div>'+
     '<div class="detail"><h2>'+esc(m.nome)+'</h2>'+
     '<div class="lvl-school">'+esc(lvlTxt)+'</div>'+
     '<div class="badges">'+badges+'</div>'+
@@ -217,7 +224,26 @@ function showDetail(m){
     '<div class="classlist">Classes: '+esc(m.classes.join(", "))+'</div>'+
     '<button class="detailbtn'+(on?" on":"")+'" id="dbtn">'+(on?"★ No grimório — remover":"☆ Adicionar ao grimório")+'</button></div>';
   document.getElementById("dbtn").onclick=()=>toggleKnown(m);
+  const bs=document.getElementById("dbarstar"); if(bs) bs.onclick=()=>toggleKnown(m);
   const bk=document.getElementById("dback"); if(bk) bk.onclick=closeDetail;
+}
+// atualiza só os dois botões de estrela do detalhe, sem redesenhar o painel —
+// redesenhar jogaria a leitura de volta ao topo (uma magia longa tem ~3 telas)
+function updateDetailToggles(){
+  if(!state.selected) return;
+  const on=knownUnion().has(state.selected);
+  const bar=document.getElementById("dbarstar");
+  if(bar){
+    bar.textContent=on?"★":"☆";
+    bar.classList.toggle("on",on);
+    bar.setAttribute("aria-pressed",on);
+    bar.setAttribute("aria-label",on?"Remover do grimório":"Adicionar ao grimório");
+  }
+  const btn=document.getElementById("dbtn");
+  if(btn){
+    btn.classList.toggle("on",on);
+    btn.textContent=on?"★ No grimório — remover":"☆ Adicionar ao grimório";
+  }
 }
 
 // ---- EXPORTAR PDF (somente magias selecionadas da classe atual) ----
@@ -382,6 +408,15 @@ function init(){
 
   const btnFilters=document.getElementById("btnFilters"), filterPanel=document.getElementById("filterPanel");
   btnFilters.onclick=()=>{ const open=filterPanel.classList.toggle("open"); btnFilters.setAttribute("aria-expanded",open); };
+
+  // menu ⋯ das ações de mesa (só aparece no celular; no desktop os botões seguem soltos)
+  const btnMore=document.getElementById("btnMore"), grimMore=document.getElementById("grimMore");
+  const fecharMore=()=>{ grimMore.classList.remove("open"); btnMore.setAttribute("aria-expanded","false"); };
+  btnMore.onclick=e=>{ e.stopPropagation();
+    const aberto=grimMore.classList.toggle("open"); btnMore.setAttribute("aria-expanded",aberto); };
+  grimMore.onclick=fecharMore;            // escolheu uma ação → fecha
+  document.addEventListener("click",e=>{ // tocou fora → fecha
+    if(!grimMore.contains(e.target) && e.target!==btnMore) fecharMore(); });
 
   document.getElementById("btnPrint").onclick=exportPDF;
   document.getElementById("btnExport").onclick=exportGrim;

@@ -18,7 +18,7 @@ function saveSelectedClasses(){ localStorage.setItem("grim_classes", JSON.string
 
 const state = {
   classes: loadSelectedClasses(),
-  levels: new Set(), school:"", ritual:false, conc:false, known:false, homebrew:false,
+  levels: new Set(), school:"", ritual:false, conc:false, material:false, known:false, homebrew:false,
   search:"", selected:null, grimorio:{}
 };
 function selectedClasses(){ return CLASSES.filter(c=>state.classes.has(c)); }
@@ -42,6 +42,11 @@ window.GRIMORIO_API = {
 
 // ---- helpers ----
 function schoolColor(s){ return "var("+(SCHOOL_VAR[s]||"--muted")+")"; }
+function materialDesc(m){
+  const mt=/(?:^|,)\s*M(?:\s*\(([^)]*)\))?/.exec(m.componentes||"");
+  return mt ? (mt[1]||"") : null;
+}
+function hasMaterial(m){ return materialDesc(m)!==null; }
 function circleName(n){ return n===0?"Truques":n+"º Círculo"; }
 function el(tag,cls,html){ const e=document.createElement(tag); if(cls)e.className=cls; if(html!=null)e.innerHTML=html; return e; }
 function esc(s){ return (s||"").replace(/[&<>]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[m])); }
@@ -88,6 +93,7 @@ function filtered(){
     if(state.school && m.escola!==state.school) return false;
     if(state.ritual && !m.ritual) return false;
     if(state.conc && !m.concentracao) return false;
+    if(state.material && !hasMaterial(m)) return false;
     if(state.known && !ku.has(m.nome)) return false;
     if(state.homebrew && !m.homebrew) return false;
     if(q && !m.nome.toLowerCase().includes(q)) return false;
@@ -127,6 +133,8 @@ function render(){
       if(multi) tags.appendChild(el("span","mini","·"+spellClasses(m).map(c=>c.slice(0,3)).join("/")));
       if(m.ritual) tags.appendChild(el("span","mini","R"));
       if(m.concentracao) tags.appendChild(el("span","mini","C"));
+      if(hasMaterial(m)){ const mat=el("span","mini mat","M"); const md=materialDesc(m);
+        mat.title="Componente material"+(md?": "+md:""); tags.appendChild(mat); }
       if(m.homebrew){ const hb=el("span","mini hb","HB"); hb.title="Homebrew — fora do Livro do Jogador 2024"; tags.appendChild(hb); }
       row.append(star,main,tags);
       row.onclick=()=>{ state.selected=m.nome; showDetail(m);
@@ -159,6 +167,7 @@ function showDetail(m){
   if(m.homebrew) badges+='<span class="badge hb" title="Fora do Livro do Jogador 2024">✦ Homebrew</span>';
   if(m.ritual) badges+='<span class="badge rit">Ritual</span>';
   if(m.concentracao) badges+='<span class="badge con">Concentração</span>';
+  if(hasMaterial(m)) badges+='<span class="badge mat">Material</span>';
   badges+='<span class="badge" style="border-color:'+schoolColor(m.escola)+'">'+esc(m.escola)+'</span>';
   pane.innerHTML =
     '<button class="detail-back" id="dback">‹ Voltar à lista</button>'+
@@ -304,6 +313,7 @@ function init(){
   document.getElementById("search").oninput=e=>{ state.search=e.target.value; render(); };
   document.getElementById("fRitual").onchange=e=>{ state.ritual=e.target.checked; render(); };
   document.getElementById("fConc").onchange=e=>{ state.conc=e.target.checked; render(); };
+  document.getElementById("fMaterial").onchange=e=>{ state.material=e.target.checked; render(); };
   document.getElementById("fKnown").onchange=e=>{ state.known=e.target.checked;
     document.body.classList.toggle("grim-mode",e.target.checked); render(); };
   document.getElementById("fHomebrew").onchange=e=>{ state.homebrew=e.target.checked; render(); };

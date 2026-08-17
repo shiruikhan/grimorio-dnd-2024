@@ -91,10 +91,14 @@ function buildLevelFilter(){
   const tk=el("button","tk","Truques"); tk.dataset.lv="0"; box.appendChild(tk);
   for(let i=1;i<=9;i++){ const b=el("button",null,i+"º"); b.dataset.lv=i; box.appendChild(b); }
   box.querySelectorAll("button").forEach(b=>{
-    if(state.levels.has(+b.dataset.lv)) b.classList.add("active");
-    b.onclick=()=>{ const lv=+b.dataset.lv;
-    if(state.levels.has(lv)) state.levels.delete(lv); else state.levels.add(lv);
-    b.classList.toggle("active"); saveFilters(); render(); }; });
+    const lv=+b.dataset.lv, on=state.levels.has(lv);
+    b.setAttribute("aria-label","Filtrar por "+circleName(lv));
+    b.setAttribute("aria-pressed",on);
+    if(on) b.classList.add("active");
+    b.onclick=()=>{ const marcado=!state.levels.has(lv);
+      if(marcado) state.levels.add(lv); else state.levels.delete(lv);
+      b.classList.toggle("active",marcado); b.setAttribute("aria-pressed",marcado);
+      saveFilters(); render(); }; });
 }
 function buildSchoolFilter(){
   const sel=document.getElementById("schoolFilter");
@@ -328,10 +332,19 @@ function exportGrim(){
 }
 function importGrim(file){
   const r=new FileReader();
-  r.onload=()=>{ try{ const d=JSON.parse(r.result);
-      if(d.grimorio){ CLASSES.forEach(c=>{ if(d.grimorio[c]){ state.grimorio[c]=new Set(d.grimorio[c]); saveGrim(c);} }); }
-      render(); alert("Grimório restaurado com sucesso.");
-    }catch(e){ alert("Arquivo inválido."); } };
+  // valida tudo antes de gravar: um arquivo estranho não pode deixar o grimório pela metade
+  r.onload=()=>{
+    let d;
+    try{ d=JSON.parse(r.result); }
+    catch(e){ alert("Arquivo inválido: não é um JSON."); return; }
+    const g = d && typeof d==="object" ? d.grimorio : null;
+    if(!g || typeof g!=="object"){ alert("Arquivo inválido: não parece um backup do Grimório."); return; }
+    const validas = CLASSES.filter(c=>Array.isArray(g[c]));
+    if(!validas.length){ alert("Arquivo inválido: nenhuma classe reconhecida no backup."); return; }
+    validas.forEach(c=>{ state.grimorio[c]=new Set(g[c].filter(n=>typeof n==="string")); saveGrim(c); });
+    render(); alert("Grimório restaurado: "+validas.join(", ")+".");
+  };
+  r.onerror=()=>alert("Não foi possível ler o arquivo.");
   r.readAsText(file);
 }
 

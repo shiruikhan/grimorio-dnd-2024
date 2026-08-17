@@ -29,18 +29,20 @@ grimorio/
 ├── css/style.css       estilos
 ├── js/app.js           lógica do grimório
 ├── js/ficha.js         ficha de personagem simplificada
-└── data/
-    ├── magias.js       dados carregados pela página
-    ├── magias.json     mesmos dados em JSON puro (backup/portável)
-    ├── classes.js      tabelas de conjuração por classe (D&D 2024)
-    └── talentos.js     talentos que alteram truques/magias preparadas
+├── data/
+│   ├── magias.js       dados carregados pela página
+│   ├── magias.json     mesmos dados em JSON puro (fonte da verdade)
+│   ├── classes.js      tabelas de conjuração por classe (D&D 2024)
+│   └── talentos.js     talentos que alteram truques/magias preparadas
+└── tools/
+    └── verificar-dados.js   confere/regera os dados das magias (só para edição)
 ```
 
 ## Observações
 - Os dados foram transcritos do Livro do Jogador (2024) para uso pessoal.
 - O grimório fica salvo no navegador (localStorage). Use **Backup** antes de limpar o histórico do navegador.
 - O `localStorage` é por navegador/dispositivo: use **Backup** / **Restaurar** (`.json`) para levar suas magias de um lugar para outro.
-- Para editar/adicionar magias, ajuste `data/magias.json` e regenere `data/magias.js` (formato: `window.MAGIAS = [...]`).
+- Para editar/adicionar magias, ajuste `data/magias.json` (a fonte da verdade) e regenere `data/magias.js` com `node tools/verificar-dados.js --gerar`. Sem argumento, o script só confere: sincronia entre os dois arquivos, campos obrigatórios preenchidos, escolas/classes/círculos válidos, nomes únicos e coerência de `comp_v`/`comp_s`/`comp_m`/`material` com a string `componentes`. Ele não é usado pelo site — o Node só é necessário para editar os dados.
 
 ## Aviso legal e conteúdo
 Este é um **projeto pessoal**, mas qualquer pessoa é livre para usar, baixar e imprimir. 🙂

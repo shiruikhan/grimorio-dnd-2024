@@ -11,7 +11,9 @@ const ASSETS = [
   "./favicon.svg",
   "./manifest.json",
   "./img/icon-192.png",
-  "./img/icon-512.png"
+  "./img/icon-512.png",
+  "./img/icon-512-maskable.png",
+  "./img/apple-touch-icon.png"
 ];
 
 self.addEventListener("install", e=>{

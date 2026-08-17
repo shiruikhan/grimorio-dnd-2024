@@ -9,6 +9,7 @@ const ATR_NOMES = {FOR:"Força",DES:"Destreza",CON:"Constituição",INT:"Intelig
 let ficha = null;      // dados da ficha da classe atual
 let fichaClasse = null;// classe à qual `ficha` pertence
 let aberta = false;
+let focoAnterior = null;// elemento que tinha o foco antes de abrir (devolvido ao fechar)
 
 // ---- persistência (chave própria; não toca nas chaves do grimório) ----
 function defaultFicha(cls){
@@ -77,6 +78,7 @@ function abrir(){
   fichaClasse = cls;
   ficha = loadFicha(cls);
   aberta = true;
+  focoAnterior = document.activeElement;
   document.getElementById("fichaOverlay").hidden = false;
   document.body.classList.add("ficha-open");
   renderPanel();
@@ -85,15 +87,34 @@ function fechar(){
   aberta = false;
   document.getElementById("fichaOverlay").hidden = true;
   document.body.classList.remove("ficha-open");
+  if(focoAnterior && document.contains(focoAnterior)) focoAnterior.focus();
+  focoAnterior = null;
+}
+// mantém o Tab dentro do painel enquanto a ficha está aberta (aria-modal)
+function focaveis(){
+  const panel = document.querySelector("#fichaOverlay .ficha-panel");
+  if(!panel) return [];
+  return [...panel.querySelectorAll('button,input,select,textarea,a[href],[tabindex]:not([tabindex="-1"])')]
+    .filter(n=>!n.disabled && n.offsetParent!==null);
+}
+function prendeFoco(e){
+  const itens = focaveis();
+  if(!itens.length) return;
+  const primeiro = itens[0], ultimo = itens[itens.length-1];
+  const panel = document.querySelector("#fichaOverlay .ficha-panel");
+  if(!panel.contains(document.activeElement)){ e.preventDefault(); primeiro.focus(); }
+  else if(e.shiftKey && document.activeElement===primeiro){ e.preventDefault(); ultimo.focus(); }
+  else if(!e.shiftKey && document.activeElement===ultimo){ e.preventDefault(); primeiro.focus(); }
 }
 function renderPanel(){
   const ov = document.getElementById("fichaOverlay");
   ov.innerHTML = "";
   const panel = el("div","ficha-panel");
+  panel.tabIndex = -1; // recebe o foco ao abrir, sem roubar o teclado de nenhum campo
 
   const head = el("div","ficha-head",
-    '<h2>🧙 Ficha — '+esc(fichaClasse)+'</h2>'+
-    '<button id="fichaClose" title="Fechar a ficha">✕</button>');
+    '<h2 id="fichaTitulo">🧙 Ficha — '+esc(fichaClasse)+'</h2>'+
+    '<button id="fichaClose" title="Fechar a ficha" aria-label="Fechar a ficha">✕</button>');
   panel.appendChild(head);
 
   const body = el("div","ficha-body");
@@ -153,6 +174,7 @@ function renderPanel(){
   document.getElementById("fichaExport").onclick = exportFicha;
   ov.onclick = e=>{ if(e.target===ov) fechar(); };
   updateComputed();
+  panel.focus();
 }
 
 // seção de talentos que alteram truques/magias preparadas (data/talentos.js)
@@ -448,7 +470,11 @@ function exportFicha(){
 // ---- init ----
 document.addEventListener("DOMContentLoaded",()=>{
   document.getElementById("btnFicha").onclick = abrir;
-  document.addEventListener("keydown",e=>{ if(e.key==="Escape"&&aberta) fechar(); });
+  document.addEventListener("keydown",e=>{
+    if(!aberta) return;
+    if(e.key==="Escape") fechar();
+    else if(e.key==="Tab") prendeFoco(e);
+  });
   // grimório mudou (estrela, troca de classe, importação, limpar) → ressincroniza
   document.addEventListener("grim:change",()=>{
     if(!aberta) return;

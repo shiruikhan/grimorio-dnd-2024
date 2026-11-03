@@ -74,6 +74,7 @@ function buildClasses(){
   const nav=document.getElementById("classes"); nav.innerHTML="";
   CLASSES.forEach(c=>{
     const b=el("button",state.classes.has(c)?"active":"",c);
+    b.setAttribute("aria-pressed",state.classes.has(c));
     b.title="Multiclasse: clique para adicionar/remover esta classe do filtro";
     b.onclick=()=>{
       if(state.classes.has(c)){
@@ -151,7 +152,7 @@ function render(){
       star.onkeydown=(e)=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); toggleStar(e); } };
       const main=el("div","row-main");
       main.appendChild(el("span","nm",esc(m.nome)));
-      main.appendChild(el("span","row-meta",esc(m.tempo+" · "+m.alcance+(m.concentracao?" · Concentração":""))));
+      main.appendChild(el("span","row-meta","<span>"+esc(m.tempo)+"</span><span>"+esc(m.alcance)+"</span>"+(m.concentracao?"<span>Concentração</span>":"")));
       const tags=el("span","tags");
       const dot=el("span","sch-dot"); dot.style.background=schoolColor(m.escola); dot.title=m.escola; tags.appendChild(dot);
       if(multi) tags.appendChild(el("span","mini","·"+spellClasses(m).map(c=>c.slice(0,3)).join("/")));
@@ -180,7 +181,7 @@ function toggleKnown(m){
 function updateCount(){ document.getElementById("knownCount").textContent = knownUnion().size+" no grimório"; }
 
 // ---- detail ----
-function emptyHTML(){ return '<div class="empty"><span class="logo big">✶</span><p>Selecione uma magia para ver os detalhes.</p></div>'; }
+function emptyHTML(){ return '<div class="empty"><p>Selecione uma magia na lista para ler a descrição completa.</p></div>'; }
 function closeDetail(){
   if(!document.body.classList.contains("detail-open")) return;
   document.body.classList.remove("detail-open");
@@ -195,13 +196,12 @@ function showDetail(m){
   document.body.classList.add("detail-open");
   if(!wasOpen) history.pushState({grimDetail:true},"",location.href);
   const on=knownUnion().has(m.nome);
-  const lvlTxt = m.nivel===0 ? "Truque de "+m.escola : m.nivel+"º Círculo · "+m.escola;
+  const lvlTxt = m.nivel===0 ? "Truque de "+m.escola : m.escola+" de "+m.nivel+"º círculo";
   let badges="";
-  if(m.homebrew) badges+='<span class="badge hb" title="Fora do Livro do Jogador 2024">✦ Homebrew</span>';
+  if(m.homebrew) badges+='<span class="badge hb" title="Fora do Livro do Jogador 2024">Homebrew</span>';
   if(m.ritual) badges+='<span class="badge rit">Ritual</span>';
   if(m.concentracao) badges+='<span class="badge con">Concentração</span>';
   if(hasMaterial(m)) badges+='<span class="badge mat">Material</span>';
-  badges+='<span class="badge" style="border-color:'+schoolColor(m.escola)+'">'+esc(m.escola)+'</span>';
   pane.innerHTML =
     // barra fixa do celular: voltar, nome (orientação quando a descrição é longa) e a estrela,
     // para marcar no grimório sem rolar até o fim do texto
@@ -211,9 +211,10 @@ function showDetail(m){
       '<button class="detail-bar-star'+(on?" on":"")+'" id="dbarstar" aria-pressed="'+on+'"'+
         ' aria-label="'+(on?"Remover do grimório":"Adicionar ao grimório")+'">'+(on?"★":"☆")+'</button>'+
     '</div>'+
-    '<div class="detail"><h2>'+esc(m.nome)+'</h2>'+
+    '<article class="detail" style="--sc:'+schoolColor(m.escola)+'">'+
     '<div class="lvl-school">'+esc(lvlTxt)+'</div>'+
-    '<div class="badges">'+badges+'</div>'+
+    '<h2>'+esc(m.nome)+'</h2>'+
+    (badges?'<div class="badges">'+badges+'</div>':'')+
     '<dl class="props">'+
       '<dt>Conjuração</dt><dd>'+esc(m.tempo)+'</dd>'+
       '<dt>Alcance</dt><dd>'+esc(m.alcance)+'</dd>'+
@@ -222,7 +223,7 @@ function showDetail(m){
     '</dl>'+
     '<div class="desc">'+fmtDesc(m.descricao)+'</div>'+
     '<div class="classlist">Classes: '+esc(m.classes.join(", "))+'</div>'+
-    '<button class="detailbtn'+(on?" on":"")+'" id="dbtn">'+(on?"★ No grimório — remover":"☆ Adicionar ao grimório")+'</button></div>';
+    '<button class="detailbtn'+(on?" on":"")+'" id="dbtn">'+(on?"★ No grimório — remover":"☆ Adicionar ao grimório")+'</button></article>';
   document.getElementById("dbtn").onclick=()=>toggleKnown(m);
   const bs=document.getElementById("dbarstar"); if(bs) bs.onclick=()=>toggleKnown(m);
   const bk=document.getElementById("dback"); if(bk) bk.onclick=closeDetail;
@@ -409,7 +410,7 @@ function init(){
   const btnFilters=document.getElementById("btnFilters"), filterPanel=document.getElementById("filterPanel");
   btnFilters.onclick=()=>{ const open=filterPanel.classList.toggle("open"); btnFilters.setAttribute("aria-expanded",open); };
 
-  // menu ⋯ das ações de mesa (só aparece no celular; no desktop os botões seguem soltos)
+  // menu ⋯ das ações de mesa (exportar, backup, restaurar, limpar)
   const btnMore=document.getElementById("btnMore"), grimMore=document.getElementById("grimMore");
   const fecharMore=()=>{ grimMore.classList.remove("open"); btnMore.setAttribute("aria-expanded","false"); };
   btnMore.onclick=e=>{ e.stopPropagation();

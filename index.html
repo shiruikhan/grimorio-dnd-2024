@@ -7,7 +7,7 @@
 <meta name="description" content="Leitor das 390 magias de D&amp;D 2024 (Livro do Jogador) em português: grimório pessoal por classe, filtros, busca e exportação em PDF. Funciona offline e no celular.">
 <meta name="robots" content="index, follow">
 <meta name="google-site-verification" content="E1j43u7SC4yvwPWYKgAWP0epFbFOqf1-W_CsYZSu6Kk">
-<meta name="theme-color" content="#14110f">
+<meta name="theme-color" content="#1a1d26">
 <link rel="canonical" href="https://shiruikhan.github.io/grimorio-dnd-2024/">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Grimório D&amp;D 2024">
@@ -29,7 +29,10 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Grimório">
-<link rel="stylesheet" href="css/style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400;0,500;0,700;1,400&family=Alegreya+Sans:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="css/style.css?v=7">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -55,71 +58,82 @@
 </script>
 </head>
 <body>
-<header class="topbar">
+<div class="app">
+<aside class="rail" id="toolbar">
   <div class="brand">
-    <span class="logo">✶</span>
+    <span class="logo" aria-hidden="true">✶</span>
     <div>
       <h1>Grimório</h1>
-      <span class="sub">Livro do Jogador · D&amp;D 2024</span>
+      <span class="sub">D&amp;D 2024, Livro do Jogador</span>
     </div>
-  </div>
-  <nav class="classes" id="classes"></nav>
-  <div class="topactions">
-    <div class="search-wrap">
-      <input type="search" id="search" placeholder="Buscar magia…" autocomplete="off">
-      <button type="button" id="searchClear" class="search-clear" hidden aria-label="Limpar busca">✕</button>
-    </div>
-    <a class="gh-link" href="https://github.com/shiruikhan/grimorio-dnd-2024" target="_blank" rel="noopener" title="Ver o código no GitHub" aria-label="Ver no GitHub">
-      <svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
-      <span>GitHub</span>
+    <a class="gh-link" href="https://github.com/shiruikhan/grimorio-dnd-2024" target="_blank" rel="noopener" title="Ver o código no GitHub">
+      <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+      <span class="sr-only">Código no GitHub</span>
     </a>
   </div>
-</header>
 
-<div class="toolbar" id="toolbar">
-  <div class="levels" id="levelFilter"></div>
-  <button type="button" id="btnFilters" class="filters-toggle" aria-expanded="false" aria-controls="filterPanel">
-    <span>⚙ Filtros</span><span class="fcount" id="filterCount" hidden>0</span>
-  </button>
-  <div class="filters" id="filterPanel">
-    <select id="schoolFilter"><option value="">Todas as escolas</option></select>
-    <label class="chk"><input type="checkbox" id="fRitual"> Ritual</label>
-    <label class="chk"><input type="checkbox" id="fConc"> Concentração</label>
-    <label class="chk"><input type="checkbox" id="fMaterial"> Material</label>
-    <label class="chk chk-known"><input type="checkbox" id="fKnown"> Só do grimório</label>
-    <label class="chk chk-hb"><input type="checkbox" id="fHomebrew"> Homebrew</label>
+  <div class="rail-group">
+    <h2 class="rail-h" id="hClasses">Classes</h2>
+    <nav class="classes" id="classes" aria-labelledby="hClasses"></nav>
   </div>
+
+  <div class="rail-group">
+    <h2 class="rail-h" id="hCirculos">Círculo</h2>
+    <div class="levels" id="levelFilter" role="group" aria-labelledby="hCirculos"></div>
+  </div>
+
+  <div class="rail-group">
+    <button type="button" id="btnFilters" class="filters-toggle" aria-expanded="false" aria-controls="filterPanel">
+      <span>Filtros</span><span class="fcount" id="filterCount" hidden>0</span>
+    </button>
+    <h2 class="rail-h rail-h-filters">Filtros</h2>
+    <div class="filters" id="filterPanel">
+      <select id="schoolFilter" aria-label="Escola de magia"><option value="">Todas as escolas</option></select>
+      <label class="chk"><input type="checkbox" id="fRitual"> Ritual</label>
+      <label class="chk"><input type="checkbox" id="fConc"> Concentração</label>
+      <label class="chk"><input type="checkbox" id="fMaterial"> Material</label>
+      <label class="chk chk-hb"><input type="checkbox" id="fHomebrew"> Homebrew</label>
+      <label class="chk chk-known"><input type="checkbox" id="fKnown"> Só do grimório</label>
+    </div>
+  </div>
+
   <div class="grimactions">
     <span class="count" id="knownCount">0 no grimório</span>
-    <button id="btnFicha" title="Ficha de personagem simplificada (nível, atributos, magias e espaços)">🧙 Ficha</button>
-    <!-- no celular estas quatro ações (de mesa, não de jogo) recolhem no menu ⋯ -->
+    <button id="btnFicha" class="btn-primary" title="Ficha de personagem simplificada (nível, atributos, magias e espaços)">Abrir ficha</button>
+    <!-- ações de mesa (não de jogo): recolhidas no menu ⋯ -->
     <div class="grim-more" id="grimMore">
-      <button id="btnPrint" title="Exportar PDF só das magias do grimório das classes selecionadas (escolha 'Salvar como PDF' no diálogo)">📄 Exportar PDF</button>
-      <button id="btnExport" title="Backup do grimório (.json)">⭳ Backup</button>
-      <button id="btnImport" title="Restaurar grimório de um backup (.json)">⭱ Restaurar</button>
+      <button id="btnPrint" title="Exportar PDF só das magias do grimório das classes selecionadas (escolha 'Salvar como PDF' no diálogo)">Exportar PDF</button>
+      <button id="btnExport" title="Backup do grimório (.json)">Backup</button>
+      <button id="btnImport" title="Restaurar grimório de um backup (.json)">Restaurar</button>
       <button id="btnClear" class="danger" title="Limpar grimório da classe atual">Limpar</button>
     </div>
     <button id="btnMore" class="more-toggle" aria-expanded="false" aria-controls="grimMore" aria-label="Mais ações">⋯</button>
     <input type="file" id="importFile" accept="application/json" hidden>
   </div>
-</div>
+</aside>
 
 <main class="layout">
-  <section class="list-pane" id="listPane"></section>
-  <section class="detail-pane" id="detailPane">
+  <section class="list-col" aria-label="Magias">
+    <div class="search-wrap">
+      <input type="search" id="search" placeholder="Buscar magia pelo nome" autocomplete="off" aria-label="Buscar magia">
+      <button type="button" id="searchClear" class="search-clear" hidden aria-label="Limpar busca">✕</button>
+    </div>
+    <div class="list-pane" id="listPane"></div>
+  </section>
+  <section class="detail-pane" id="detailPane" aria-label="Detalhes da magia">
     <div class="empty" id="emptyDetail">
-      <span class="logo big">✶</span>
       <p>Selecione uma classe e clique em uma magia para ver os detalhes.</p>
     </div>
   </section>
 </main>
+</div>
 
 <div id="fichaOverlay" class="ficha-overlay" role="dialog" aria-modal="true" aria-labelledby="fichaTitulo" hidden></div>
 
 <script src="data/magias.js"></script>
 <script src="data/classes.js"></script>
 <script src="data/talentos.js"></script>
-<script src="js/app.js"></script>
+<script src="js/app.js?v=2"></script>
 <script src="js/ficha.js"></script>
 <script>
 if("serviceWorker" in navigator){

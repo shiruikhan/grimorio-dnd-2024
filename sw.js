@@ -1,9 +1,9 @@
-const CACHE = "grimorio-v1";
+const CACHE = "grimorio-v2";
 const ASSETS = [
   "./",
   "./index.html",
-  "./css/style.css",
-  "./js/app.js",
+  "./css/style.css?v=7",
+  "./js/app.js?v=2",
   "./js/ficha.js",
   "./data/magias.js",
   "./data/classes.js",
@@ -33,6 +33,14 @@ self.addEventListener("activate", e=>{
 self.addEventListener("fetch", e=>{
   if(e.request.method!=="GET") return;
   const url=new URL(e.request.url);
+  // fontes do Google: cache-first, para a tipografia sobreviver offline
+  if(url.hostname==="fonts.googleapis.com" || url.hostname==="fonts.gstatic.com"){
+    e.respondWith(caches.match(e.request).then(cached=>cached || fetch(e.request).then(res=>{
+      if(res && (res.ok || res.type==="opaque")){ const copy=res.clone(); caches.open(CACHE).then(c=>c.put(e.request, copy)); }
+      return res;
+    })));
+    return;
+  }
   if(url.origin!==location.origin) return;
   e.respondWith(
     caches.match(e.request).then(cached=>{

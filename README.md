@@ -16,6 +16,7 @@ Use a **versão online** no link acima, ou baixe e abra `index.html` no navegado
 - **Busca** por nome.
 - **Grimório pessoal**: clique na estrela (☆/★) para marcar as magias conhecidas. Salvo automaticamente no navegador (um grimório por classe).
 - **Detalhes completos** de cada magia: conjuração, alcance, componentes, duração e descrição integral.
+- **Dano em destaque**: magias que causam dano ganham um bloco próprio com os dados e o tipo (ex.: **8d6 Ígneo**), a salvaguarda ou o ataque, e a escada de dano por círculo de espaço (ou por nível de personagem, nos truques). Cada trecho de dano no texto e nas cartas impressas aparece na mesma cor, e no modo "Só do grimório" o dano aparece na própria lista.
 - **Ficha simplificada** (botão 🧙 Ficha): nome, nível e atributos do personagem. Calcula automaticamente (regras 2024) proficiência, CD de magia, ataque mágico, truques e magias preparadas permitidos e espaços de magia por círculo — com caixinhas de uso e botão de descanso longo. Tem exportação própria em folha A4 imprimível.
 - **Talentos de conjuração** na ficha: Iniciado em Magia (repetível), Conjurador Ritualista, Telecinético, Telepático, Tocado Pelas Sombras e Tocado Por Fadas ajustam os limites de truques e magias preparadas (✦ indica bônus de talento).
 - **Salvaguardas e perícias** na ficha: as salvaguardas da classe já vêm marcadas; clique nas perícias para alternar ○ sem proficiência → ● proficiente → ★ especialização, com bônus e Percepção Passiva calculados na hora.
@@ -28,6 +29,7 @@ grimorio/
 ├── index.html          página principal
 ├── css/style.css       estilos
 ├── js/app.js           lógica do grimório
+├── js/dano.js          lê o dano do texto de cada magia (bloco "Dano" e destaque no texto)
 ├── js/ficha.js         ficha de personagem simplificada
 ├── data/
 │   ├── magias.js       dados carregados pela página
@@ -35,7 +37,8 @@ grimorio/
 │   ├── classes.js      tabelas de conjuração por classe (D&D 2024)
 │   └── talentos.js     talentos que alteram truques/magias preparadas
 └── tools/
-    └── verificar-dados.js   confere/regera os dados das magias (só para edição)
+    ├── verificar-dados.js   confere/regera os dados das magias (só para edição)
+    └── conferir-dano.js     lista o dano que js/dano.js extraiu de cada magia
 ```
 
 ## Observações
@@ -43,6 +46,7 @@ grimorio/
 - O grimório fica salvo no navegador (localStorage). Use **Backup** antes de limpar o histórico do navegador.
 - O `localStorage` é por navegador/dispositivo: use **Backup** / **Restaurar** (`.json`) para levar suas magias de um lugar para outro.
 - Para editar/adicionar magias, ajuste `data/magias.json` (a fonte da verdade) e regenere `data/magias.js` com `node tools/verificar-dados.js --gerar`. Sem argumento, o script só confere: sincronia entre os dois arquivos, campos obrigatórios preenchidos, escolas/classes/círculos válidos, nomes únicos e coerência de `comp_v`/`comp_s`/`comp_m`/`material` com a string `componentes`. Ele não é usado pelo site — o Node só é necessário para editar os dados.
+- O bloco "Dano" não tem campo próprio nos dados: `js/dano.js` lê o texto da descrição. Depois de adicionar ou editar magias, rode `node tools/conferir-dano.js` (ou `node tools/conferir-dano.js --sem` para ver as que citam dano mas ficaram sem bloco) e confira se a redação nova foi entendida.
 
 ## Aviso legal e conteúdo
 Este é um **projeto pessoal**, mas qualquer pessoa é livre para usar, baixar e imprimir. 🙂

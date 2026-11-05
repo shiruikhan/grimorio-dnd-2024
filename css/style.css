@@ -1,8 +1,9 @@
 /* ==========================================================================
    Grimório D&D 2024
    Paleta "nanquim e verdete": ardósia azulada, texto cor de velino,
-   verdete (pátina de cobre, pigmento dos manuscritos) para interação
-   e ouro-folha reservado ao que está no grimório (★).
+   verdete (pátina de cobre, pigmento dos manuscritos) para interação,
+   ouro-folha reservado ao que está no grimório (★) e mínio (o vermelho
+   das rubricas) reservado ao dano.
    ========================================================================== */
 :root{
   --nanquim:#1a1d26;   /* fundo */
@@ -15,6 +16,7 @@
   --verdete:#7cc4b0;
   --verdete-fundo:#2b4a45;
   --ouro:#e2bb5c;
+  --minio:#f08a5d;     /* dano: bloco, rubrica no texto e linha do modo grimório */
   --perigo:#e38479;
 
   /* nomes antigos, ainda usados pela ficha e pelos destaques */
@@ -147,6 +149,7 @@ body.grim-mode .chk-known{color:var(--ouro);font-weight:700}
 
 /* modo grimório ("Só do grimório"): referência rápida durante o jogo */
 body.grim-mode .row-meta{display:flex}
+.row-meta .rm-dano{color:var(--minio);font-variant-numeric:lining-nums}
 body.grim-mode .spell-row{padding-top:10px;padding-bottom:10px}
 body.grim-mode .circle-head{border-bottom-color:var(--ouro)}
 
@@ -171,10 +174,41 @@ body.grim-mode .circle-head{border-bottom-color:var(--ouro)}
 .props dt{grid-row:1;font-size:13.5px;color:var(--pena)}
 .props dd{grid-row:2;margin:0;font-size:15.5px;line-height:1.3;color:var(--velino)}
 
+/* dano: uma rubrica entre as propriedades e o texto — dados em mínio, tipo em itálico,
+   como a magia é resolvida e a escada de círculos (o mesmo círculo dos filtros do trilho) */
+.dano-bloco{margin:-10px 0 28px;padding:0 0 20px;border-bottom:1px solid var(--linha)}
+.dn-h{margin:0;font-family:var(--sans);font-size:13.5px;font-weight:400;color:var(--pena)}
+.dn-partes{display:flex;flex-wrap:wrap;align-items:baseline;gap:0 28px}
+.dn-parte{display:inline-flex;flex-wrap:wrap;align-items:baseline;gap:0 9px}
+/* dados em sans: no tamanho de título o "1" da Alegreya serifada se confunde com "I" */
+.dn-dados{font-family:var(--sans);font-size:36px;line-height:1.15;font-weight:700;color:var(--minio);
+  font-variant-numeric:lining-nums;white-space:nowrap}
+.dn-nota{font-family:var(--sans);font-size:24px;line-height:1.3;font-weight:700;color:var(--minio)}
+.dn-mod{font-size:15.5px;color:var(--minio)}
+.dn-tipo{font-family:var(--serif);font-style:italic;font-size:21px;color:var(--velino)}
+.dn-teste{margin:2px 0 0;font-size:15.5px;line-height:1.4;color:var(--velino)}
+.dn-teste span{color:var(--pena)}
+.dn-escala{margin-top:16px}
+.dn-legenda{margin:0 0 8px;font-family:var(--serif);font-style:italic;font-size:15.5px;color:var(--pena)}
+.dn-texto{margin:0;font-size:15.5px;line-height:1.45;color:var(--velino);max-width:60ch}
+.dn-passos{list-style:none;margin:0;padding:0;display:grid;gap:8px 4px;
+  grid-template-columns:repeat(var(--n),minmax(0,60px))}
+.dn-passos li{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}
+.dn-r{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;flex:0 0 auto;
+  border:1.5px solid var(--linha);border-radius:50%;font-family:var(--serif);font-size:15.5px;color:var(--pena)}
+.dn-v{font-size:15px;line-height:1.25;color:var(--velino);font-variant-numeric:lining-nums tabular-nums;white-space:nowrap}
+/* truques: degraus por faixa de nível, em pílula como o botão "Truques" */
+.dn-niveis{grid-template-columns:repeat(var(--n),minmax(0,92px))}
+.dn-niveis .dn-r{width:auto;height:30px;padding:0 11px;border-radius:15px;font-family:var(--sans);font-size:14px}
+.dn-niveis .dn-v{white-space:normal}
+
 /* texto da magia: serifa de leitura, com capitular rubricada na cor da escola */
 .desc{font-family:var(--serif);font-size:18.5px;line-height:1.6;white-space:pre-wrap;max-width:64ch}
 .desc::first-letter{float:left;font-size:4.1em;line-height:.82;padding:.06em .1em 0 0;color:var(--sc);font-weight:500}
 .desc strong{font-style:italic;font-weight:700;color:var(--velino)}
+/* cada trecho de dano no texto ganha a mesma tinta do bloco, com os dados em negrito */
+.desc .dano{color:var(--minio)}
+.desc .dano b{font-weight:700;font-variant-numeric:lining-nums}
 .detail .classlist{margin-top:28px;padding-top:12px;border-top:1px solid var(--linha);font-size:14.5px;color:var(--pena)}
 .detailbtn{margin-top:18px;background:var(--relevo);color:var(--velino);border:1px solid var(--linha);
   padding:10px 18px;border-radius:var(--raio);font-size:15.5px}
@@ -280,6 +314,7 @@ body.ficha-open{overflow:hidden}
   .app{grid-template-columns:208px minmax(280px,340px) 1fr}
   .detail{padding:36px 36px 56px}
   .detail h2{font-size:38px}
+  .dn-dados{font-size:32px}
   .props{grid-template-columns:repeat(2,minmax(0,1fr))}
   .props dt:nth-of-type(-n+2){grid-row:1}
   .props dd:nth-of-type(-n+2){grid-row:2}
@@ -354,12 +389,24 @@ body.ficha-open{overflow:hidden}
   .props dt{font-size:12.5px}
   .props dd{font-size:14.5px}
 
+  .dano-bloco{margin:-4px 0 20px;padding-bottom:16px}
+  .dn-dados{font-size:29px}
+  .dn-tipo{font-size:19px}
+  .dn-passos{gap:8px 2px}
+  .dn-v{font-size:14px}
+
   /* ficha em tela cheia */
   .ficha-overlay{padding:0}
   .ficha-panel{width:100%;min-height:100%;border-radius:0;border:none}
   .ficha-atrs{grid-template-columns:repeat(3,1fr)}
   .ficha-ident{flex-wrap:wrap}
   .skills-grid{grid-template-columns:1fr}
+}
+
+/* celulares bem estreitos: a escada de 9 círculos ainda cabe numa linha */
+@media(max-width:360px){
+  .dn-r{width:30px;height:30px;font-size:14px}
+  .dn-v{font-size:12.5px}
 }
 
 @media(prefers-reduced-motion:reduce){

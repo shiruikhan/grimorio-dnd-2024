@@ -1,9 +1,10 @@
-const CACHE = "grimorio-v2";
+const CACHE = "grimorio-v3";
 const ASSETS = [
   "./",
   "./index.html",
-  "./css/style.css?v=7",
-  "./js/app.js?v=2",
+  "./css/style.css?v=8",
+  "./js/dano.js",
+  "./js/app.js?v=3",
   "./js/ficha.js",
   "./data/magias.js",
   "./data/classes.js",

@@ -67,7 +67,58 @@ function hasMaterial(m){ return materialDesc(m)!==null; }
 function circleName(n){ return n===0?"Truques":n+"º Círculo"; }
 function el(tag,cls,html){ const e=document.createElement(tag); if(cls)e.className=cls; if(html!=null)e.innerHTML=html; return e; }
 function esc(s){ return (s||"").replace(/[&<>]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[m])); }
-function fmtDesc(t){ return esc(t).replace(/(Usando um Espaço de Magia de Círculo Superior\.|Aprimoramento de Truque\.)/g,"<strong>$1</strong>"); }
+function fmtDesc(t){
+  const h=esc(t).replace(/(Usando um Espaço de Magia de Círculo Superior\.|Aprimoramento de Truque\.)/g,"<strong>$1</strong>");
+  return window.GRIM_DANO ? window.GRIM_DANO.rubricar(h) : h;
+}
+
+// ---- dano (extraído do texto por js/dano.js) ----
+const danoCache=new Map();
+function danoDe(m){
+  if(!window.GRIM_DANO) return null;
+  if(!danoCache.has(m.nome)) danoCache.set(m.nome, window.GRIM_DANO.analisar(m));
+  return danoCache.get(m.nome);
+}
+const ESCOLHA_TXT={"à escolha":"tipo à escolha","do espírito":"tipo do espírito","rolado":"tipo sorteado no dado","desencadeado":"tipo que a desencadeou"};
+function tipoTxt(p){ return [p.tipo||ESCOLHA_TXT[p.escolha]||"", p.extra?"adicional":""].filter(Boolean).join(" "); }
+// resumo curto para a linha da lista no modo grimório: "8d6 Ígneo"
+function danoCurto(m){
+  const a=danoDe(m); if(!a) return "";
+  const p=a.partes[0];
+  if(!p.dados) return p.nota||"";
+  return p.dados+(p.tipo && !/,|\sou\s/.test(p.tipo) ? " "+p.tipo : "");
+}
+function danoHTML(m){
+  const a=danoDe(m); if(!a) return "";
+  const partes=a.partes.map(p=>
+    '<span class="dn-parte">'+
+      (p.dados?'<span class="dn-dados">'+esc(p.dados)+'</span>':'<span class="dn-nota">'+esc(p.nota)+'</span>')+
+      (p.mod?'<span class="dn-mod">+ modificador</span>':'')+
+      (tipoTxt(p)?'<span class="dn-tipo">'+esc(tipoTxt(p))+'</span>':'')+
+    '</span>').join("");
+  let teste="";
+  if(a.teste){
+    const salva=/^Salvaguarda/.test(a.teste);
+    teste='<p class="dn-teste">'+esc(a.teste)+
+      (a.metade?'<span>, metade do dano '+(salva?"em caso de sucesso":"se errar")+'</span>':'')+'</p>';
+  }
+  let escala="";
+  const e=a.escala;
+  if(e){
+    const leg=e.legenda || (m.nivel===0
+      ? (e.modo==="texto"?"Aprimoramento de truque":"Por nível de personagem")
+      : (e.modo==="texto"?"Com espaço de círculo superior":"Por círculo do espaço de magia"));
+    escala='<div class="dn-escala"><p class="dn-legenda">'+esc(leg)+'</p>'+
+      (e.modo==="texto"
+        ? '<p class="dn-texto">'+esc(e.texto)+'</p>'
+        : '<ol class="dn-passos'+(e.modo==="nivel"?" dn-niveis":"")+'" style="--n:'+e.passos.length+'" aria-label="'+esc(leg)+'">'+
+            e.passos.map(s=>'<li><span class="dn-r">'+esc(s.rotulo)+'</span><span class="dn-v">'+esc(s.valor)+'</span></li>').join("")+
+          '</ol>')+
+      '</div>';
+  }
+  return '<section class="dano-bloco" aria-labelledby="dnH"><h3 class="dn-h" id="dnH">Dano</h3>'+
+    '<div class="dn-partes">'+partes+'</div>'+teste+escala+'</section>';
+}
 
 // ---- top UI ----
 function buildClasses(){
@@ -152,7 +203,9 @@ function render(){
       star.onkeydown=(e)=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); toggleStar(e); } };
       const main=el("div","row-main");
       main.appendChild(el("span","nm",esc(m.nome)));
-      main.appendChild(el("span","row-meta","<span>"+esc(m.tempo)+"</span><span>"+esc(m.alcance)+"</span>"+(m.concentracao?"<span>Concentração</span>":"")));
+      const dc=danoCurto(m);
+      main.appendChild(el("span","row-meta",(dc?"<span class='rm-dano'>"+esc(dc)+"</span>":"")+
+        "<span>"+esc(m.tempo)+"</span><span>"+esc(m.alcance)+"</span>"+(m.concentracao?"<span>Concentração</span>":"")));
       const tags=el("span","tags");
       const dot=el("span","sch-dot"); dot.style.background=schoolColor(m.escola); dot.title=m.escola; tags.appendChild(dot);
       if(multi) tags.appendChild(el("span","mini","·"+spellClasses(m).map(c=>c.slice(0,3)).join("/")));
@@ -221,6 +274,7 @@ function showDetail(m){
       '<dt>Componentes</dt><dd>'+esc(m.componentes)+'</dd>'+
       '<dt>Duração</dt><dd>'+esc(m.duracao)+'</dd>'+
     '</dl>'+
+    danoHTML(m)+
     '<div class="desc">'+fmtDesc(m.descricao)+'</div>'+
     '<div class="classlist">Classes: '+esc(m.classes.join(", "))+'</div>'+
     '<button class="detailbtn'+(on?" on":"")+'" id="dbtn">'+(on?"★ No grimório — remover":"☆ Adicionar ao grimório")+'</button></article>';
@@ -274,6 +328,8 @@ body{font-family:"Georgia","Times New Roman",serif;color:#241c10;
 .card .d{flex:1 1 auto;overflow:hidden;font-size:10.5px;line-height:1.4;white-space:pre-wrap;
   text-align:justify;padding:5px 9px;border-top:1px solid #d9cba5;margin:0}
 .card .d strong{color:#6b4f1d}
+.card .d .dano{color:#9a3412}
+.card .d .dano b{font-weight:bold}
 .card .foot{flex:0 0 auto;display:flex;justify-content:space-between;font-size:8px;color:#7a6a45;
   padding:2px 9px 3px;border-top:1px solid #d9cba5;font-style:italic}
 @page{size:A4;margin:0}
